@@ -9,6 +9,11 @@ export interface ShowcaseItem {
   bullets: string[]
 }
 
+interface AiFaqItem {
+  question: string
+  answer: string
+}
+
 const showcaseImages = {
   productAds: '/images/showcase/spark-product-ads.webp',
   animeGirl: '/images/showcase/anime-girl-realize.webp',
@@ -69,10 +74,9 @@ export function getAiExampleImages(locale: Locale) {
 export function getAiShowcaseContent(locale: Locale) {
   if (locale === 'zh') {
     return {
-      badge: 'GPT Image 2 Generator',
-      title: '用 GPT Image 2 更快生成、编辑并迭代高质量 AI 图像',
+      title: '用 GPT Image 2 更快生成和编辑 AI 图像',
       description:
-        '把提示词生成、参考图编辑和风格融合放进同一个工作流。Use GPT Image 2 适合做品牌视觉、角色图、图片修改和更真实的商业出图。',
+        '把生图、改图和参考图工作流放进同一个界面，快速做出更可用的品牌视觉、角色图和营销素材。',
       stats: [
         '适合品牌与广告图',
         '支持参考图与编辑流程',
@@ -124,10 +128,9 @@ export function getAiShowcaseContent(locale: Locale) {
   }
 
   return {
-    badge: 'GPT Image 2 Generator',
-    title: 'Use GPT Image 2 to generate, edit, and refine Chat GPT images faster',
+    title: 'Generate and edit AI images with GPT Image 2',
     description:
-      'Use GPT Image 2 combines prompt-based generation, image editing, and style blending in one workflow. It is built for realistic visuals, marketing assets, consistent characters, and faster production-style iteration.',
+      'Create images, edit references, and refine outputs in one workflow built for marketing visuals, consistent characters, and faster iteration.',
     stats: [
       'Brand-ready visuals in seconds',
       'Reference-guided image editing',
@@ -175,5 +178,77 @@ export function getAiShowcaseContent(locale: Locale) {
         bullets: ['Blend multiple references', 'Transfer style with more structure preserved', 'More cohesive final outputs'],
       },
     ] satisfies ShowcaseItem[],
+  }
+}
+
+export function getAiFaqContent(locale: Locale) {
+  if (locale === 'zh') {
+    return {
+      faq: {
+        title: 'Q&A',
+        description: '关于 GPT Image 2 Generator 的常见问题。',
+        faqs: [
+          {
+            question: '什么是 GPT Image 2 Generator？',
+            answer:
+              '它是一个基于 GPT Image 2 的在线生图与改图工具，支持文本生成、参考图编辑和多轮迭代。',
+          },
+          {
+            question: '我可以用文字直接修改现有图片吗？',
+            answer:
+              '可以。上传参考图后，你可以直接描述想改的内容，比如背景、颜色、构图或局部元素。',
+          },
+          {
+            question: '它适合做哪些类型的图片？',
+            answer:
+              '比较适合产品广告图、落地页视觉、角色设定图、社媒素材，以及需要连续迭代的商业图片。',
+          },
+          {
+            question: '怎样才能获得更稳定的结果？',
+            answer:
+              '建议明确主体、风格、构图和光线要求；如果要保持一致性，最好同时提供参考图并分步骤迭代。',
+          },
+          {
+            question: '生成后的图片可以下载吗？',
+            answer:
+              '可以，生成完成后可以直接下载结果图，继续用于设计、内容制作或后续编辑流程。',
+          },
+        ] satisfies AiFaqItem[],
+      },
+    }
+  }
+
+  return {
+    faq: {
+      title: 'Q&A',
+      description: 'Common questions about using GPT Image 2 for image generation and editing.',
+      faqs: [
+        {
+          question: 'What is GPT Image 2 Generator?',
+          answer:
+            'It is an AI image tool built for prompt-based generation, reference-guided editing, and faster visual iteration in one workflow.',
+        },
+        {
+          question: 'Can I edit an existing image with text instructions?',
+          answer:
+            'Yes. You can upload a reference image and describe changes in plain language, including background swaps, object edits, lighting, and composition tweaks.',
+        },
+        {
+          question: 'What kinds of images is it best for?',
+          answer:
+            'It works well for product visuals, landing page graphics, ad creatives, character variations, and other production-style image tasks.',
+        },
+        {
+          question: 'How do I get more consistent outputs?',
+          answer:
+            'Be specific about subject, style, framing, and lighting. For stronger consistency, reuse reference images and refine the result in smaller steps.',
+        },
+        {
+          question: 'Can I download the generated images?',
+          answer:
+            'Yes. After generation, you can download the image and keep iterating on it inside the same workflow if needed.',
+        },
+      ] satisfies AiFaqItem[],
+    },
   }
 }

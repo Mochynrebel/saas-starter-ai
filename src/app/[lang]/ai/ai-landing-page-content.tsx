@@ -1,7 +1,8 @@
 import { Locale } from '@/lib/i18n'
 import { AIImageGenerator } from './ai-image-generator'
 import { FeatureShowcase } from './feature-showcase'
-import { getAiExampleImages, getAiShowcaseContent } from './ai-content'
+import { FAQ } from '@/components/sections/faq'
+import { getAiExampleImages, getAiFaqContent, getAiShowcaseContent } from './ai-content'
 
 interface AILandingPageContentProps {
   locale: Locale
@@ -13,6 +14,7 @@ export function AILandingPageContent({
   aiConfig,
 }: AILandingPageContentProps) {
   const showcase = getAiShowcaseContent(locale)
+  const faq = getAiFaqContent(locale)
 
   const generatorConfig = {
     ...aiConfig.generator,
@@ -34,18 +36,15 @@ export function AILandingPageContent({
     <>
       <section className="px-4 pb-10 pt-12 sm:px-6 lg:px-8 lg:pb-14 lg:pt-16">
         <div className="mx-auto max-w-7xl">
-          <div className="mb-8 max-w-4xl lg:mb-10">
-            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-primary/80">
-              {showcase.badge}
-            </p>
-            <h1 className="mt-4 max-w-5xl text-4xl font-semibold tracking-[-0.05em] text-foreground sm:text-5xl lg:text-6xl">
+          <div className="mx-auto mb-8 max-w-4xl text-center lg:mb-10">
+            <h1 className="mx-auto max-w-3xl text-4xl font-semibold tracking-[-0.05em] text-foreground sm:text-5xl lg:text-6xl">
               {showcase.title}
             </h1>
-            <p className="mt-5 max-w-3xl text-base leading-7 text-muted-foreground sm:text-lg">
+            <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">
               {showcase.description}
             </p>
 
-            <div className="mt-6 flex flex-wrap gap-3">
+            <div className="mt-6 flex flex-wrap justify-center gap-3">
               {showcase.stats.map((stat) => (
                 <span
                   key={stat}
@@ -67,6 +66,8 @@ export function AILandingPageContent({
         description={showcase.sectionDescription}
         items={showcase.items}
       />
+
+      <FAQ dict={faq} />
     </>
   )
 }
