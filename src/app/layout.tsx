@@ -8,14 +8,14 @@ export default function RootLayout({
   return (
     <html suppressHydrationWarning>
       <head>
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-CTES637PN1"></script>
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-P9EL0EVBN9"></script>
         <script
           dangerouslySetInnerHTML={{
             __html: `
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
-              gtag('config', 'G-CTES637PN1');
+              gtag('config', 'G-P9EL0EVBN9');
             `,
           }}
         />
