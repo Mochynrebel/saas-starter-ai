@@ -217,4 +217,4 @@ Following these best practices will help you build a robust, scalable SaaS appli
 - Test thoroughly
 - Monitor your application in production
 
-Our SaaS Starter template implements all these best practices out of the box, so you can focus on building your unique features instead of setting up the foundation. 
+Use GPT Image 2 implements all these best practices out of the box, so you can focus on building your unique features instead of setting up the foundation. 

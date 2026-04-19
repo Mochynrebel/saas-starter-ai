@@ -174,7 +174,7 @@ export const adminTexts = {
     loginWithAdmin: 'Please login with your admin account',
     adminManagementSystem: 'Admin Management System',
     loginWithAdminMobile: 'Please login with admin account',
-    saasStarterAdmin: 'SaaS Starter Admin Panel',
+    saasStarterAdmin: 'Use GPT Image 2 Admin Panel',
     
     // Feature labels
     secure: 'Secure',
@@ -311,7 +311,7 @@ export const adminTexts = {
     loginWithAdmin: '请使用管理员账户登录',
     adminManagementSystem: '后台管理系统',
     loginWithAdminMobile: '请使用管理员账户登录',
-    saasStarterAdmin: 'SaaS Starter 后台管理',
+    saasStarterAdmin: 'Use GPT Image 2 后台管理',
     
     // Feature labels
     secure: '安全',

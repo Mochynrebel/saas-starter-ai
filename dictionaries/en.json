@@ -1,12 +1,12 @@
 {
   "site": {
-    "name": "SaaS Starter",
+    "name": "Use GPT Image 2",
     "description": "The complete SaaS starter template to help you build and launch your next product faster than ever before.",
     "url": "https://saas-starter.edgeone.app",
     "email": "hello@saas-starter.edgeone.app",
-    "author": "SaaS Starter Team",
-    "logo": "SaaS Starter",
-    "copyright": "SaaS Starter. All rights reserved.",
+    "author": "Use GPT Image 2 Team",
+    "logo": "Use GPT Image 2",
+    "copyright": "Use GPT Image 2. All rights reserved.",
     "tagline": "Made with ❤️ for developers worldwide"
   },
   "social": [
@@ -628,14 +628,14 @@
     }
   },
   "about": {
-    "pageTitle": "About SaaS Starter",
+    "pageTitle": "About Use GPT Image 2",
     "pageSubtitle": "We're a team of passionate developers and designers who understand the challenges of building SaaS products from scratch. That's why we created this comprehensive starter template to help you skip the boring stuff and focus on what matters most - your unique product features.",
     "heroTitle": "About",
-    "heroHighlight": "SaaS Starter",
+    "heroHighlight": "Use GPT Image 2",
     "storyTitle": "Our Story",
     "storyContent": [
       "It all started when our founder, Alex, spent months building the same authentication, payment, and dashboard components for the third time. He realized that every SaaS product needs the same foundational features, yet developers keep rebuilding them from scratch.",
-      "That's when the idea for SaaS Starter was born. We wanted to create a comprehensive, production-ready template that would save developers months of work and help them launch their products faster.",
+      "That's when the idea for Use GPT Image 2 was born. We wanted to create a comprehensive, production-ready platform that would save creators months of work and help them generate and edit images faster.",
       "Today, we're proud to have helped over 250+ developers and teams launch their SaaS products successfully. Our template has been battle-tested in production and continues to evolve with the latest best practices."
     ],
     "valuesTitle": "Our Values",
@@ -659,7 +659,7 @@
       }
     ],
     "teamTitle": "Meet Our Team",
-    "teamSubtitle": "The people behind SaaS Starter.",
+    "teamSubtitle": "The people behind Use GPT Image 2.",
     "team": [
       {
         "name": "Alex Johnson",
@@ -824,7 +824,7 @@
     "pageTitle": "Success Stories",
     "heroTitle": "Success",
     "heroHighlight": "Stories",
-    "pageSubtitle": "See how our SaaS Starter template has helped companies build and launch successful products faster than ever before.",
+    "pageSubtitle": "See how Use GPT Image 2 has helped companies create and launch successful AI image workflows faster than ever before.",
     "shareYourStory": "Share Your Success Story",
     "shareSubtitle": "Have a project you'd like to showcase? We'd love to feature your success story.",
     "submitYourCase": "Submit Your Case",
@@ -853,7 +853,7 @@
     "contactSupport": "Contact Support →",
     "faqs": [
       {
-        "question": "What is included in the SaaS Starter Template?",
+        "question": "What is included in Use GPT Image 2?",
         "answer": "Our template includes a complete Next.js application with authentication, payment processing, dashboard components, landing pages, email templates, and much more. You get everything you need to launch your SaaS product."
       },
       {
@@ -967,7 +967,7 @@
   },
   "blog": {
     "pageTitle": "Our Blog",
-    "pageSubtitle": "Insights, tutorials, and updates from the SaaS Starter team. Learn how to build better SaaS products and grow your business.",
+    "pageSubtitle": "Insights, tutorials, and updates from the Use GPT Image 2 team. Learn how to build better AI image workflows and grow your business.",
     "noPosts": {
       "title": "No blog posts yet",
       "description": "We're working on some great content. Check back soon!",

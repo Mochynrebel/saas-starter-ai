@@ -2,7 +2,7 @@
 title: 'SaaS 应用开发完整指南'
 date: '2023-12-01'
 excerpt: '了解如何从零开始构建现代化的 SaaS 应用程序，包括架构设计、技术选型和最佳实践。'
-author: 'SaaS Starter 团队'
+author: 'Use GPT Image 2 Team'
 tags: ['SaaS', '创业', 'Next.js', '教程']
 image: '/images/blogs/blog1.png'
 ---

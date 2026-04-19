@@ -31,7 +31,7 @@ export function Header({ dict, initialUser }: HeaderProps) {
   
   // Use default values if dict is not provided
   const siteInfo = dict?.site || {
-    name: "EdgeOne Saas Starter"
+    name: "Use GPT Image 2"
   }
   const headerConfig = dict?.header || {
     navigation: [],

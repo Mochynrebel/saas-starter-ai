@@ -1,12 +1,12 @@
 {
   "site": {
-    "name": "SaaS 启动器",
+    "name": "Use GPT Image 2",
     "description": "全方位 SaaS 启动模板，助您更快构建和发布新产品。",
     "url": "https://saas-starter.edgeone.app",
     "email": "hello@saas-starter.edgeone.app",
-    "author": "SaaS 启动器团队",
-    "logo": "SaaS 启动器",
-    "copyright": "SaaS 启动器。保留所有权利。",
+    "author": "Use GPT Image 2 Team",
+    "logo": "Use GPT Image 2",
+    "copyright": "Use GPT Image 2。保留所有权利。",
     "tagline": "为全球开发者倾心打造 ❤️"
   },
   "social": [
@@ -628,14 +628,14 @@
     }
   },
   "about": {
-    "pageTitle": "关于 SaaS 启动器",
+    "pageTitle": "关于 Use GPT Image 2",
     "pageSubtitle": "我们是一支热爱技术的开发与设计团队，深知从零开发 SaaS 的难点。为此，我们打造了这套高效模板，让您专注创新，无需重复造轮子。",
     "heroTitle": "关于",
-    "heroHighlight": "SaaS 启动器",
+    "heroHighlight": "Use GPT Image 2",
     "storyTitle": "我们的故事",
     "storyContent": [
       "一切都始于我们的创始人 Alex 第三次花费数月时间构建相同的身份验证、支付和仪表板组件时的感悟。他意识到每个 SaaS 产品都需要相同的基础功能，但开发者却一直在从头开始重复构建。",
-      "这就是 SaaS 启动器诞生的契机。我们想要创建一个全面的、生产就绪的模板，为开发者节省数月的工作时间，帮助他们更快地推出产品。",
+      "这就是 Use GPT Image 2 诞生的契机。我们想要创建一个全面的、生产就绪的平台，为创作者节省数月的工作时间，帮助他们更快地生成和编辑图像。",
       "如今，我们自豪地帮助了超过 250+ 名开发者和团队成功推出了他们的 SaaS 产品。我们的模板已经在生产环境中经过实战测试，并持续采用最新的最佳实践进行演进。"
     ],
     "valuesTitle": "我们的价值观",
@@ -647,7 +647,7 @@
       { "title": "质量", "description": "我们承诺交付高质量、可直接投入生产的代码，让您用得安心。" }
     ],
     "teamTitle": "认识我们的团队",
-    "teamSubtitle": "SaaS 启动器背后的人们。",
+    "teamSubtitle": "Use GPT Image 2 背后的团队。",
     "team": [
       {
         "name": "Alex Johnson",
@@ -812,7 +812,7 @@
     "pageTitle": "成功案例",
     "heroTitle": "成功",
     "heroHighlight": "案例",
-    "pageSubtitle": "了解我们的 SaaS 启动器模板如何帮助公司比以往更快地构建和推出成功的产品。",
+    "pageSubtitle": "了解 Use GPT Image 2 如何帮助团队更快地创建、编辑并交付高质量 AI 图像。",
     "shareYourStory": "分享您的成功故事",
     "shareSubtitle": "有想要展示的项目吗？我们很乐意展示您的成功故事。",
     "submitYourCase": "提交您的案例",
@@ -841,7 +841,7 @@
     "contactSupport": "联系技术支持 →",
     "faqs": [
       {
-        "question": "SaaS 启动器模板包含什么？",
+        "question": "Use GPT Image 2 包含什么？",
         "answer": "我们的模板包含一个完整的 Next.js 应用程序，具有身份验证、支付处理、仪表板组件、落地页、邮件模板等等。您可以获得启动 SaaS 产品所需的一切。"
       },
       {
@@ -955,7 +955,7 @@
   },
   "blog": {
     "pageTitle": "我们的博客",
-    "pageSubtitle": "来自 SaaS 启动器团队的见解、教程和更新。学习如何构建更好的 SaaS 产品并发展您的业务。",
+    "pageSubtitle": "来自 Use GPT Image 2 团队的见解、教程和更新。学习如何打造更好的 AI 图像工作流并发展您的业务。",
     "noPosts": {
       "title": "还没有博客文章",
       "description": "我们正在制作一些精彩的内容。请稍后查看！",
@@ -973,13 +973,13 @@
     }
   },
   "metadata": {
-    "siteName": "SaaS 启动器",
-    "defaultTitle": "SaaS 启动器 - 构建您的下一个 SaaS 产品",
-    "titleTemplate": "%s | SaaS 启动器",
+    "siteName": "Use GPT Image 2",
+    "defaultTitle": "Use GPT Image 2 | Chat GPT Images Generator | Realistic AI",
+    "titleTemplate": "%s | Use GPT Image 2",
     "description": "现代化的 SaaS 启动模板，具有构建下一个产品所需的所有组件。",
     "keywords": "SaaS, Next.js, React, TypeScript, Tailwind CSS",
-    "author": "SaaS 启动器",
-    "creator": "SaaS 启动器",
+    "author": "Use GPT Image 2",
+    "creator": "Use GPT Image 2",
     "twitterCreator": "@saas_starter"
   },
   "highlights": {

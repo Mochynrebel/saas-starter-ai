@@ -23,9 +23,9 @@ export function Footer({ dict }: FooterProps) {
   
   // Use default values if dict is not provided
   const siteInfo = dict?.site || {
-    name: "EdgeOne Saas Starter",
-    description: "A modern SaaS starter template",
-    copyright: "EdgeOne Saas Starter. All rights reserved.",
+    name: "Use GPT Image 2",
+    description: "Create high-quality Chat GPT images with realistic AI generation.",
+    copyright: "Use GPT Image 2. All rights reserved.",
     tagline: "Made with ❤️ for developers worldwide"
   }
   const socialLinks = dict?.social || []
