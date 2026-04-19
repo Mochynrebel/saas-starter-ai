@@ -1,12 +1,9 @@
-import { Inter } from 'next/font/google'
 import { ThemeProvider } from '@/components/providers/theme-provider'
 import { AuthProvider } from '@/contexts/AuthContext'
 import { Locale, locales } from '@/lib/i18n'
 import { generateMetadata as generateI18nMetadata } from '@/lib/metadata'
 import { getServerUser } from '@/lib/auth-server'
 import '../globals.css'
-
-const inter = Inter({ subsets: ['latin'] })
 
 export async function generateMetadata({
   params,
