@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { ChevronLeft, ChevronRight, Download, Image as ImageIcon } from 'lucide-react'
 import { ImageLoading } from './image-loading'
@@ -37,6 +37,20 @@ export function ImageResult({
   const [activeIndex, setActiveIndex] = useState(0)
   const hasExamples = exampleImages.length > 0
 
+  useEffect(() => {
+    if (imageUrl || exampleImages.length <= 1) {
+      return
+    }
+
+    const timer = window.setInterval(() => {
+      setActiveIndex((current) =>
+        current === exampleImages.length - 1 ? 0 : current + 1
+      )
+    }, 3600)
+
+    return () => window.clearInterval(timer)
+  }, [exampleImages.length, imageUrl])
+
   const showPrevious = () => {
     setActiveIndex((current) =>
       current === 0 ? exampleImages.length - 1 : current - 1
@@ -50,7 +64,7 @@ export function ImageResult({
   }
 
   return (
-    <div className="h-full flex flex-col p-6 min-h-0">
+    <div className="flex h-full min-h-[420px] flex-col p-6 lg:min-h-0">
       <div className="mb-4 flex items-center justify-between h-6 flex-shrink-0">
         <p className="text-sm font-medium text-foreground leading-6">
           {resultTitle}
@@ -68,7 +82,7 @@ export function ImageResult({
         )}
       </div>
 
-      <div className="rounded-xl border border-border/70 overflow-hidden min-h-0 flex-1">
+      <div className="min-h-0 flex-1 overflow-hidden rounded-[24px] border border-border/70">
         {isGenerating ? (
           <ImageLoading />
         ) : imageUrl ? (
@@ -84,7 +98,7 @@ export function ImageResult({
             <img
               src={exampleImages[activeIndex].imageUrl}
               alt={exampleImages[activeIndex].alt}
-              className="h-full w-full object-cover"
+              className="h-full w-full object-cover transition-opacity duration-500"
             />
 
             <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/65 to-transparent p-4 text-white">

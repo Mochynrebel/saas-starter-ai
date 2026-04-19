@@ -334,11 +334,10 @@ export function AIImageGenerator({ config }: AIImageGeneratorProps) {
 
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8">
-      {/* Main Container - increased height for better image display */}
-      <div className="h-[70vh] grid grid-cols-2 gap-6">
+    <div className="mx-auto max-w-7xl">
+      <div className="grid gap-6 lg:h-[72vh] lg:grid-cols-2">
         {/* Left: Parameters Section */}
-        <div className="h-full flex flex-col p-6">
+        <div className="flex h-full flex-col rounded-[28px] border border-border/70 bg-card p-6 shadow-[0_24px_80px_rgba(15,23,42,0.05)]">
           <form className="flex-1 flex flex-col min-h-0" onSubmit={handleGenerate}>
             <div className="mb-4 flex items-center justify-between h-6 flex-shrink-0 gap-2">
               <div className="flex items-center gap-3 flex-1 min-w-0">
@@ -501,17 +500,19 @@ export function AIImageGenerator({ config }: AIImageGeneratorProps) {
         </div>
 
         {/* Right: Result Section */}
-        <ImageResult
-          imageUrl={imageUrl}
-          prompt={prompt}
-          resultTitle={config.resultTitle}
-          emptyStateDescription={config.emptyStateDescription}
-          downloadText={config.download}
-          onDownload={handleDownload}
-          isGenerating={isGenerating}
-          hasError={!!error}
-          exampleImages={config.exampleImages}
-        />
+        <div className="rounded-[28px] border border-border/70 bg-card shadow-[0_24px_80px_rgba(15,23,42,0.05)]">
+          <ImageResult
+            imageUrl={imageUrl}
+            prompt={prompt}
+            resultTitle={config.resultTitle}
+            emptyStateDescription={config.emptyStateDescription}
+            downloadText={config.download}
+            onDownload={handleDownload}
+            isGenerating={isGenerating}
+            hasError={!!error}
+            exampleImages={config.exampleImages}
+          />
+        </div>
       </div>
     </div>
   )
