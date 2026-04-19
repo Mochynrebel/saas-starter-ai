@@ -22,6 +22,18 @@ interface PricingProps {
         name: string
         description: string
         period: string
+        prices?: {
+          month: string
+          year: string
+        }
+        periods?: {
+          month: string
+          year: string
+        }
+        notes?: {
+          month?: string
+          year?: string
+        }
         popular: boolean
         features: string[]
         buttonText: string
@@ -58,6 +70,7 @@ interface DisplayPlan {
   popular: boolean
   priceText: string
   subtitle: string
+  noteText?: string
   badgeText?: string
   href: string
   isExternalCheckout: boolean
@@ -105,6 +118,10 @@ export function Pricing({ pricingData, dict, lang = 'en' }: PricingProps) {
             selectedPrice?.interval === 'year'
               ? dict?.common?.pricing?.perYear || 'per year'
               : dict?.common?.pricing?.perMonth || 'per month',
+          noteText:
+            selectedPrice?.interval === 'year' && yearlyPrice
+              ? `${formatPrice(yearlyPrice.price, plan.currency)} ${dict?.common?.pricing?.perYear || 'per year'}`
+              : undefined,
           badgeText: billingCycle === 'year' && savePercent > 0 ? `Save ${savePercent}%` : undefined,
           href: selectedPrice
             ? `/api/checkout?plan=${encodeURIComponent(plan.name)}&price=${selectedPrice.priceId}&lang=${lang}`
@@ -116,6 +133,12 @@ export function Pricing({ pricingData, dict, lang = 'en' }: PricingProps) {
         const pricingKey = comparisonPriceOrder[index]
         const fallbackPriceLabel = pricingKey ? comparisonPricing?.[pricingKey] : undefined
         const isEnterprise = index === 2
+        const selectedPrice =
+          plan.prices?.[billingCycle] ||
+          fallbackPriceLabel ||
+          (isEnterprise ? (isZh ? '定制' : 'Custom') : (isZh ? '灵活计费' : 'Flexible'))
+        const selectedPeriod = plan.periods?.[billingCycle] || plan.period
+        const selectedNote = plan.notes?.[billingCycle]
 
         return {
           id: `${plan.name}-${index}`,
@@ -129,8 +152,9 @@ export function Pricing({ pricingData, dict, lang = 'en' }: PricingProps) {
               ? dict?.common?.buttons?.contactSales || (isZh ? '联系销售' : 'Contact Sales')
               : dict?.common?.buttons?.getStarted || (isZh ? '立即开始' : 'Get Started')),
           popular: plan.popular,
-          priceText: fallbackPriceLabel || (isEnterprise ? (isZh ? '定制' : 'Custom') : (isZh ? '灵活计费' : 'Flexible')),
-          subtitle: plan.period,
+          priceText: selectedPrice,
+          subtitle: selectedPeriod,
+          noteText: selectedNote,
           badgeText: plan.popular ? dict?.pricing.discount : undefined,
           href: isEnterprise ? `/${lang}/contact` : `/${lang}/signup`,
           isExternalCheckout: false,
@@ -147,12 +171,12 @@ export function Pricing({ pricingData, dict, lang = 'en' }: PricingProps) {
                 {isZh ? '价格方案' : 'Pricing Plans'}
               </p>
               <h2 className="mt-3 text-3xl font-semibold tracking-tight text-foreground md:text-4xl">
-                {isZh ? '选择匹配你产出规模的积分套餐。' : 'Choose a credit plan that fits your output volume.'}
+                {isZh ? '选择适合你产出规模的套餐。' : 'Choose a plan that fits your output volume.'}
               </h2>
               <p className="mt-3 max-w-xl text-sm leading-7 text-muted-foreground md:text-base">
                 {isZh
-                  ? '更清晰的套餐层级、更明确的积分表达，以及更直接的注册或结账路径。'
-                  : 'Cleaner plan hierarchy, clearer credits, and a direct path into checkout or signup.'}
+                  ? '支持月付和年付两种计费方式，切换后会同步更新套餐价格和说明。'
+                  : 'Switch between monthly and annual billing to compare plan pricing instantly.'}
               </p>
             </div>
 
@@ -217,6 +241,10 @@ export function Pricing({ pricingData, dict, lang = 'en' }: PricingProps) {
                     <div className="pb-1 text-sm text-muted-foreground">{plan.subtitle}</div>
                   </div>
 
+                  {plan.noteText ? (
+                    <p className="mt-2 text-sm text-muted-foreground">{plan.noteText}</p>
+                  ) : null}
+
                   {plan.badgeText ? (
                     <div className="mt-3 inline-flex w-fit items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
                       <Sparkles className="h-3.5 w-3.5" />
@@ -269,8 +297,12 @@ export function Pricing({ pricingData, dict, lang = 'en' }: PricingProps) {
 
                   <p className="mt-4 text-center text-xs text-muted-foreground">
                     {plan.isExternalCheckout
-                      ? (isZh ? '使用安全的 Stripe 结账流程，未登录会自动跳转登录。' : 'Secure Stripe checkout. Sign-in redirect handled automatically.')
-                      : (isZh ? '当前还没有配置在线价格，可继续前往注册页或销售咨询。' : 'No live price is configured yet. Continue through signup or sales contact.')}
+                      ? (isZh
+                        ? '使用安全的 Stripe 结账流程，未登录时会自动跳转登录。'
+                        : 'Secure Stripe checkout. Sign-in redirect handled automatically.')
+                      : (isZh
+                        ? '当前还没有配置在线价格，可继续前往注册页或联系销售。'
+                        : 'No live price is configured yet. Continue through signup or sales contact.')}
                   </p>
                 </CardContent>
               </Card>

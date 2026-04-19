@@ -466,16 +466,28 @@
     "pageSubtitle": "Start free and scale as you grow. All plans include our core features with no hidden fees.",
     "monthlyBilling": "Monthly billing",
     "annualBilling": "Annual billing",
-    "discount": "Save 20%",
+    "discount": "Save 50%",
     "plans": [
       {
         "name": "Lite",
         "period": "per month",
-        "description": "Perfect for individuals and small projects getting started",
+        "prices": {
+          "month": "$9.9",
+          "year": "$4.9"
+        },
+        "periods": {
+          "month": "per month",
+          "year": "per month"
+        },
+        "notes": {
+          "month": "Best for trying the product with a light workflow",
+          "year": "Billed yearly at $58.8"
+        },
+        "description": "Perfect for creators getting started with lightweight generation needs",
         "features": [
-          "100 credits",
-          "All premium models",
-          "Technical Support"
+          "120 credits / month",
+          "Fast generation queue",
+          "Commercial use"
         ],
         "limitations": [
           "Advanced analytics",
@@ -490,11 +502,23 @@
       {
         "name": "Standard",
         "period": "per month",
-        "description": "Ideal for growing businesses and professional teams",
+        "prices": {
+          "month": "$29.9",
+          "year": "$14.9"
+        },
+        "periods": {
+          "month": "per month",
+          "year": "per month"
+        },
+        "notes": {
+          "month": "Balanced for steady weekly production",
+          "year": "Billed yearly at $178.8"
+        },
+        "description": "Best for teams with repeat production and faster turnaround expectations",
         "features": [
-         "300 credits",
-          "All premium models",
-          "Technical Support"
+          "500 credits / month",
+          "Priority generation queue",
+          "Email support"
         ],
         "limitations": [
           "White-label solution",
@@ -507,11 +531,23 @@
       {
         "name": "Pro",
         "period": "per month",
-        "description": "For large organizations with advanced requirements",
+        "prices": {
+          "month": "$59.9",
+          "year": "$29.9"
+        },
+        "periods": {
+          "month": "per month",
+          "year": "per month"
+        },
+        "notes": {
+          "month": "Built for heavier output and multi-seat collaboration",
+          "year": "Billed yearly at $358.8"
+        },
+        "description": "For power users and agencies managing larger generation volume",
         "features": [
-          "500 credits",
-          "All premium models",
-          "Technical Support"
+          "1200 credits / month",
+          "Fastest generation queue",
+          "Priority support"
         ],
         "limitations": [],
         "popular": false,
@@ -526,7 +562,7 @@
       },
       {
         "question": "Do you offer discounts for annual billing?",
-        "answer": "Yes, we offer 20% discount when you pay annually instead of monthly."
+        "answer": "Yes, annual billing is discounted by 50% compared with paying month to month."
       }
     ],
     "comparison": {
@@ -534,14 +570,14 @@
       "description": "See the main differences between plans",
       "tableHeaders": {
         "features": "Features",
-        "starter": "Starter",
-        "professional": "Professional", 
-        "enterprise": "Enterprise"
+        "starter": "Lite",
+        "professional": "Standard", 
+        "enterprise": "Pro"
       },
       "planPricing": {
-        "starter": "$80/month",
-        "professional": "$150/month",
-        "enterprise": "$300/month"
+        "starter": "$9.9/mo",
+        "professional": "$29.9/mo",
+        "enterprise": "$59.9/mo"
       },
       "features": [
         {

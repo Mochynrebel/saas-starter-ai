@@ -466,16 +466,28 @@
     "pageSubtitle": "免费起步，随业务成长灵活扩展。所有套餐均含核心功能，无隐藏费用。",
     "monthlyBilling": "按月计费",
     "annualBilling": "按年计费",
-    "discount": "省20%",
+    "discount": "年付省50%",
     "plans": [
       {
-        "name": "入门版",
+        "name": "Lite",
         "period": "每月",
-        "description": "适合初学者和小型项目的个人用户",
+        "prices": {
+          "month": "$9.9",
+          "year": "$4.9"
+        },
+        "periods": {
+          "month": "每月",
+          "year": "每月"
+        },
+        "notes": {
+          "month": "适合轻量体验和低频生成需求",
+          "year": "按年支付 $58.8"
+        },
+        "description": "适合刚开始使用的个人创作者和轻量级工作流",
         "features": [
-          "100 积分",
-          "所有高级模型",
-          "技术支持"
+          "每月 120 积分",
+          "快速生成队列",
+          "支持商业使用"
         ],
         "limitations": [
           "高级分析",
@@ -488,13 +500,25 @@
         "buttonVariant": "outline"
       },
       {
-        "name": "专业版",
+        "name": "Standard",
         "period": "每月",
-        "description": "适合成长中的企业和专业团队",
+        "prices": {
+          "month": "$29.9",
+          "year": "$14.9"
+        },
+        "periods": {
+          "month": "每月",
+          "year": "每月"
+        },
+        "notes": {
+          "month": "适合稳定周更和团队协作",
+          "year": "按年支付 $178.8"
+        },
+        "description": "适合有稳定产出需求的团队与专业用户",
         "features": [
-          "300 积分",
-          "所有高级模型",
-          "技术支持"
+          "每月 500 积分",
+          "优先生成队列",
+          "邮件支持"
         ],
         "limitations": [
           "白标解决方案",
@@ -505,13 +529,25 @@
         "buttonVariant": "default"
       },
       {
-        "name": "企业版",
+        "name": "Pro",
         "period": "每月",
-        "description": "适合有高级需求的大型组织",
+        "prices": {
+          "month": "$59.9",
+          "year": "$29.9"
+        },
+        "periods": {
+          "month": "每月",
+          "year": "每月"
+        },
+        "notes": {
+          "month": "适合高频产出和多成员协作",
+          "year": "按年支付 $358.8"
+        },
+        "description": "适合代理商、工作室和重度使用场景",
         "features": [
-          "500 积分",
-          "所有高级模型",
-          "技术支持"
+          "每月 1200 积分",
+          "最快生成队列",
+          "优先支持"
         ],
         "limitations": [],
         "popular": false,
@@ -526,7 +562,7 @@
       },
       {
         "question": "年度计费有折扣吗？",
-        "answer": "是的，如果您选择年度付费而不是月度付费，我们提供 20% 的折扣。"
+        "answer": "有，按年付费相比按月付费可节省 50%。"
       }
     ],
     "comparison": {
@@ -534,14 +570,14 @@
       "description": "查看套餐间的主要差异",
       "tableHeaders": {
         "features": "功能",
-        "starter": "入门版",
-        "professional": "专业版",
-        "enterprise": "企业版"
+        "starter": "Lite",
+        "professional": "Standard",
+        "enterprise": "Pro"
       },
       "planPricing": {
-        "starter": "￥80/月",
-        "professional": "￥150/月",
-        "enterprise": "￥300/月"
+        "starter": "$9.9/月",
+        "professional": "$29.9/月",
+        "enterprise": "$59.9/月"
       },
       "features": [
         {

@@ -8,6 +8,18 @@ export interface PricingPlan {
   price: string
   originalPrice?: string
   period: string
+  prices?: {
+    month: string
+    year: string
+  }
+  periods?: {
+    month: string
+    year: string
+  }
+  notes?: {
+    month?: string
+    year?: string
+  }
   description: string
   features: string[]
   limitations: string[]
