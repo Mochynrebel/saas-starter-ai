@@ -60,7 +60,7 @@ interface GeneratorConfig {
   referenceImageHint?: string
   referenceImageRequired?: string
   imageToImageModelUnsupported?: string
-  exampleImages?: Array<{ imageUrl: string; alt: string }>
+  exampleImages?: Array<{ imageUrl: string; alt: string; prompt: string }>
 }
 
 interface AIImageGeneratorProps {

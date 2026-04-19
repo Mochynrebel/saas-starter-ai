@@ -8,6 +8,7 @@ import { ImageLoading } from './image-loading'
 interface ExampleImage {
   imageUrl: string
   alt: string
+  prompt: string
 }
 
 interface ImageResultProps {
@@ -88,6 +89,10 @@ export function ImageResult({
 
             <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/65 to-transparent p-4 text-white">
               <p className="text-sm font-medium">{exampleImages[activeIndex].alt}</p>
+              <div className="mt-3 rounded-xl border border-white/15 bg-black/30 p-3 backdrop-blur-sm">
+                <p className="mb-1 text-[11px] uppercase tracking-[0.18em] text-white/60">Prompt</p>
+                <p className="text-sm leading-6 text-white/92">{exampleImages[activeIndex].prompt}</p>
+              </div>
               <div className="mt-3 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   {exampleImages.map((_, index) => (

@@ -1,0 +1,24 @@
+<svg width="1200" height="1200" viewBox="0 0 1200 1200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="1200" fill="#15100B"/>
+  <rect width="1200" height="1200" fill="url(#bg)"/>
+  <circle cx="850" cy="251" r="268" fill="#FFC347" fill-opacity="0.28"/>
+  <circle cx="286" cy="405" r="254" fill="#FF7C5C" fill-opacity="0.16"/>
+  <circle cx="604" cy="963" r="428" fill="#6E5C44" fill-opacity="0.18"/>
+  <rect x="163" y="773" width="874" height="227" rx="52" fill="#2A1F18" fill-opacity="0.86"/>
+  <rect x="258" y="435" width="682" height="390" rx="34" fill="#EBDFC9"/>
+  <rect x="313" y="483" width="572" height="288" rx="24" fill="#F7F0E3"/>
+  <rect x="363" y="528" width="188" height="188" rx="20" fill="#D1B99B"/>
+  <rect x="585" y="528" width="250" height="40" rx="20" fill="#B39267"/>
+  <rect x="585" y="588" width="214" height="30" rx="15" fill="#C8AB82"/>
+  <rect x="585" y="639" width="170" height="28" rx="14" fill="#D7C2A2"/>
+  <rect x="585" y="691" width="218" height="28" rx="14" fill="#D7C2A2"/>
+  <path d="M405 404C460.981 342.772 531.389 312 620 312C708.611 312 780.519 342.772 836 404" stroke="#EFD7B4" stroke-width="26" stroke-linecap="round"/>
+  <rect x="186" y="152" width="296" height="84" rx="42" fill="#FFFFFF" fill-opacity="0.1" stroke="#FFFFFF" stroke-opacity="0.18"/>
+  <text x="223" y="205" fill="white" fill-opacity="0.95" font-family="Arial, sans-serif" font-size="34" font-weight="700">Interior Moodboard</text>
+  <defs>
+    <radialGradient id="bg" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(600 600) rotate(90) scale(720)">
+      <stop stop-color="#4A3220"/>
+      <stop offset="1" stop-color="#0B0806"/>
+    </radialGradient>
+  </defs>
+</svg>

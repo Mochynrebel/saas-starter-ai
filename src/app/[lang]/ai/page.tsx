@@ -35,16 +35,28 @@ export default async function AIPage({ params }: { params: Promise<{ lang: Local
     modelNotConfigured: aiConfig.generator.modelNotConfigured,
     exampleImages: [
       {
-        imageUrl: '/images/cases/case1.png',
-        alt: lang === 'zh' ? '产品广告示例图' : 'Product advertising example',
+        imageUrl: '/images/ai-examples/seedance-style-01.svg',
+        alt: lang === 'zh' ? '电影感人像风格' : 'Cinematic portrait style',
+        prompt:
+          lang === 'zh'
+            ? '近景时尚人像，霓虹紫与暖橙边缘光，电影级布光，干净高端杂志封面质感，皮肤细节自然，浅景深'
+            : 'Close-up fashion portrait, neon violet and warm orange rim light, cinematic lighting, premium magazine cover aesthetic, natural skin detail, shallow depth of field',
       },
       {
-        imageUrl: '/images/cases/case2.png',
-        alt: lang === 'zh' ? '人物风格示例图' : 'Portrait style example',
+        imageUrl: '/images/ai-examples/seedance-style-02.svg',
+        alt: lang === 'zh' ? '高级产品主视觉' : 'Premium product hero',
+        prompt:
+          lang === 'zh'
+            ? '高端护肤精华瓶悬浮在蓝绿色未来感装置中央，玻璃反射，柔和体积光，商业广告摄影，极简背景，超清细节'
+            : 'Luxury skincare serum bottle floating in a teal futuristic set, glossy reflections, soft volumetric light, commercial advertising photography, minimal background, ultra detailed',
       },
       {
-        imageUrl: '/images/cases/case3.png',
-        alt: lang === 'zh' ? '空间氛围示例图' : 'Interior mood example',
+        imageUrl: '/images/ai-examples/seedance-style-03.svg',
+        alt: lang === 'zh' ? '室内氛围板风格' : 'Interior moodboard style',
+        prompt:
+          lang === 'zh'
+            ? '现代奶油风客厅 moodboard，暖米色和焦糖木色，拱形结构，柔和自然晨光，编辑感室内摄影，安静高级'
+            : 'Modern cream-toned living room moodboard, warm beige and caramel wood palette, arched architecture, soft morning daylight, editorial interior photography, calm luxury mood',
       },
     ],
   };
