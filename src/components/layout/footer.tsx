@@ -34,7 +34,7 @@ export function Footer({ dict }: FooterProps) {
   // Add language prefix to navigation links
   const getLocalizedHref = (href: string) => {
     if (href === '/') {
-      return `/${currentLang}/ai`
+      return currentLang === 'en' ? '/' : `/${currentLang}/ai`
     }
     return `/${currentLang}${href}`
   }

@@ -29,6 +29,13 @@ export default function LanguageSwitcher({ currentLang, dict }: LanguageSwitcher
 
   const basePath = getPathWithoutLang();
 
+  const getLocaleHref = (locale: Locale) => {
+    if (basePath === '/' || basePath === '/ai') {
+      return locale === 'en' ? '/' : `/${locale}/ai`;
+    }
+    return `/${locale}${basePath}`;
+  };
+
   // Handle clicking outside to close dropdown menu
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -72,7 +79,7 @@ export default function LanguageSwitcher({ currentLang, dict }: LanguageSwitcher
           {locales.map((locale) => (
             <Link
               key={locale}
-              href={`/${locale}${basePath}`}
+              href={getLocaleHref(locale)}
               className={`flex items-center gap-3 px-4 py-3 hover:bg-muted hover:text-primary transition-colors border-b border-border last:border-b-0 ${
                 locale === currentLang ? 'bg-muted/50 text-primary' : 'text-foreground'
               }`}
