@@ -22,14 +22,24 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   },
 })
 
+const getSupabaseUrl = () => process.env.NEXT_PUBLIC_SUPABASE_URL?.trim()
+const getSupabaseAnonKey = () => process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim()
+const getSupabaseServiceRoleKey = () => process.env.SUPABASE_SERVICE_ROLE_KEY?.trim()
+
+const createMissingConfigError = (variables: string[]) =>
+  new Error(`Supabase configuration is missing. Please set ${variables.join(' and ')} environment variables.`)
+
+export const hasSupabaseClientConfig = () => Boolean(getSupabaseUrl() && getSupabaseAnonKey())
+export const hasSupabaseAdminConfig = () => Boolean(getSupabaseUrl() && getSupabaseServiceRoleKey())
+
 
 // Server-side Supabase client for API routes
 export const createServerClient = () => {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+  const url = getSupabaseUrl()
+  const serviceKey = getSupabaseServiceRoleKey()
   
   if (!url || !serviceKey) {
-    throw new Error('Supabase configuration is missing. Please set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY environment variables.')
+    throw createMissingConfigError(['NEXT_PUBLIC_SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY'])
   }
   
   return createClient(url, serviceKey)
@@ -37,11 +47,11 @@ export const createServerClient = () => {
 
 // Server-side Supabase client with user authentication
 export const createAuthenticatedClient = (accessToken: string) => {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  const url = getSupabaseUrl()
+  const anonKey = getSupabaseAnonKey()
   
   if (!url || !anonKey) {
-    throw new Error('Supabase configuration is missing. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY environment variables.')
+    throw createMissingConfigError(['NEXT_PUBLIC_SUPABASE_URL', 'NEXT_PUBLIC_SUPABASE_ANON_KEY'])
   }
   
   return createClient(url, anonKey, {
@@ -56,14 +66,18 @@ export const createAuthenticatedClient = (accessToken: string) => {
 let supabaseAdmin: SupabaseClient | null = null
 // 创建管理员客户端（使用服务角色密钥）
 export const createSupabaseAdminClient = () => {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+  const url = getSupabaseUrl()
+  const serviceKey = getSupabaseServiceRoleKey()
   
   if (!url || !serviceKey) {
-    throw new Error('Supabase configuration is missing. Please set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY environment variables.')
+    throw createMissingConfigError(['NEXT_PUBLIC_SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY'])
   }
 
-  return createClient(url, serviceKey)
+  if (!supabaseAdmin) {
+    supabaseAdmin = createClient(url, serviceKey)
+  }
+
+  return supabaseAdmin
 }
 export const toDateTime = (secs: number) => {
   var t = new Date(+0); // Unix epoch start.

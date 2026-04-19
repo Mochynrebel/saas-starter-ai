@@ -3,9 +3,14 @@ export const dynamic = 'force-dynamic'
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import { isAdminEmail } from '@/lib/admin-utils'
+import { hasSupabaseClientConfig } from '@/lib/supabase'
 
 // Lazily create client to avoid build-time errors when env vars are not set
 function getSupabaseClient() {
+  if (!hasSupabaseClientConfig()) {
+    return null
+  }
+
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -29,9 +34,17 @@ export async function GET(request: NextRequest) {
 
     const token = authHeader.substring(7) // Remove "Bearer " prefix
     console.log('Token extracted, length:', token.length)
-    
+
     // Verify user identity
     const supabase = getSupabaseClient()
+    if (!supabase) {
+      return NextResponse.json({
+        isAdmin: false,
+        isLoggedIn: false,
+        hasAccount: false
+      })
+    }
+
     const { data: { user }, error } = await supabase.auth.getUser(token)
     if (error || !user || !user.email) {
       return NextResponse.json({

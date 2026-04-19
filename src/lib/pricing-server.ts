@@ -1,4 +1,4 @@
-import { createServerClient } from './supabase'
+import { createServerClient, hasSupabaseAdminConfig } from './supabase'
 import { SupabaseProduct, ProcessedPricing } from '@/types/pricing'
 import { getDictionary } from './dictionaries'
 import { Locale } from './i18n'
@@ -9,6 +9,11 @@ import { Locale } from './i18n'
  */
 export async function getPricingData(locale: Locale = 'en'): Promise<ProcessedPricing[]> {
   try {
+    if (!hasSupabaseAdminConfig()) {
+      console.warn('Skipping pricing fetch because Supabase admin configuration is missing.')
+      return []
+    }
+
     const supabase = createServerClient()
     
     const { data, error } = await supabase
