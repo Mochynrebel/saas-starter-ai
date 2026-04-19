@@ -1,9 +1,9 @@
 {
   "site": {
     "name": "Use GPT Image 2",
-    "description": "The complete SaaS starter template to help you build and launch your next product faster than ever before.",
+    "description": "AI-powered image generation and editing for fast, high-resolution results.",
     "url": "https://saas-starter.edgeone.app",
-    "email": "hello@saas-starter.edgeone.app",
+    "email": "contact@usegptimage2.com",
     "author": "Use GPT Image 2 Team",
     "logo": "Use GPT Image 2",
     "copyright": "Use GPT Image 2. All rights reserved.",
@@ -27,7 +27,7 @@
     },
     {
       "name": "Email",
-      "url": "mailto:hello@saas-starter.com",
+      "url": "mailto:contact@usegptimage2.com",
       "icon": "Mail"
     }
   ],

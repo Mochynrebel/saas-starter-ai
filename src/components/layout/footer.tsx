@@ -22,13 +22,19 @@ export function Footer({ dict }: FooterProps) {
   const currentLang = pathname.split('/')[1] || 'en'
   
   // Use default values if dict is not provided
-  const siteInfo = dict?.site || {
+  const siteInfo = {
+    ...(dict?.site || {}),
     name: "Use GPT Image 2",
-    description: "Create high-quality Chat GPT images with realistic AI generation.",
+    description: "AI-powered image generation and editing for fast, high-resolution results.",
+    email: "contact@usegptimage2.com",
     copyright: "Use GPT Image 2. All rights reserved.",
     tagline: "Made with ❤️ for developers worldwide"
   }
-  const socialLinks = dict?.social || []
+  const socialLinks = (dict?.social || []).map((social) =>
+    social.icon === 'Mail'
+      ? { ...social, url: 'mailto:contact@usegptimage2.com' }
+      : social
+  )
   const footerConfig = dict?.footer || { sections: [] }
   
   // Add language prefix to navigation links
@@ -59,6 +65,12 @@ export function Footer({ dict }: FooterProps) {
             <p className="text-muted-foreground mb-6 max-w-md">
               {siteInfo.description}
             </p>
+            <a
+              href={`mailto:${siteInfo.email}`}
+              className="mb-6 inline-block text-sm text-muted-foreground transition-colors hover:text-primary"
+            >
+              {siteInfo.email}
+            </a>
             <div className="flex space-x-4">
               {socialLinks.map((social, index) => {
                 const IconComponent = iconMap[social.icon as keyof typeof iconMap]
