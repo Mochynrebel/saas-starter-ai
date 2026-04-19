@@ -21,16 +21,6 @@
     <xhtml:link rel="alternate" hreflang="zh" href="https://saas-starter.edgeone.app/zh/blog" />
   </url>
   <url>
-    <loc>https://saas-starter.edgeone.app/en/cases</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://saas-starter.edgeone.app/en/cases" />
-    <xhtml:link rel="alternate" hreflang="zh" href="https://saas-starter.edgeone.app/zh/cases" />
-  </url>
-  <url>
-    <loc>https://saas-starter.edgeone.app/zh/cases</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://saas-starter.edgeone.app/en/cases" />
-    <xhtml:link rel="alternate" hreflang="zh" href="https://saas-starter.edgeone.app/zh/cases" />
-  </url>
-  <url>
     <loc>https://saas-starter.edgeone.app/en/features</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://saas-starter.edgeone.app/en/features" />
     <xhtml:link rel="alternate" hreflang="zh" href="https://saas-starter.edgeone.app/zh/features" />
@@ -39,16 +29,6 @@
     <loc>https://saas-starter.edgeone.app/zh/features</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://saas-starter.edgeone.app/en/features" />
     <xhtml:link rel="alternate" hreflang="zh" href="https://saas-starter.edgeone.app/zh/features" />
-  </url>
-  <url>
-    <loc>https://saas-starter.edgeone.app/en/contact</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://saas-starter.edgeone.app/en/contact" />
-    <xhtml:link rel="alternate" hreflang="zh" href="https://saas-starter.edgeone.app/zh/contact" />
-  </url>
-  <url>
-    <loc>https://saas-starter.edgeone.app/zh/contact</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://saas-starter.edgeone.app/en/contact" />
-    <xhtml:link rel="alternate" hreflang="zh" href="https://saas-starter.edgeone.app/zh/contact" />
   </url>
   <url>
     <loc>https://saas-starter.edgeone.app/en/pricing</loc>

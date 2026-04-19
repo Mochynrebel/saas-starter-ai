@@ -156,7 +156,7 @@ export function Pricing({ pricingData, dict, lang = 'en' }: PricingProps) {
           subtitle: selectedPeriod,
           noteText: selectedNote,
           badgeText: plan.popular ? dict?.pricing.discount : undefined,
-          href: isEnterprise ? `/${lang}/contact` : `/${lang}/signup`,
+          href: `/${lang}/signup`,
           isExternalCheckout: false,
         }
       })
@@ -301,8 +301,8 @@ export function Pricing({ pricingData, dict, lang = 'en' }: PricingProps) {
                         ? '使用安全的 Stripe 结账流程，未登录时会自动跳转登录。'
                         : 'Secure Stripe checkout. Sign-in redirect handled automatically.')
                       : (isZh
-                        ? '当前还没有配置在线价格，可继续前往注册页或联系销售。'
-                        : 'No live price is configured yet. Continue through signup or sales contact.')}
+                        ? '当前还没有配置在线价格，可继续前往注册页。'
+                        : 'No live price is configured yet. Continue through signup.')}
                   </p>
                 </CardContent>
               </Card>
@@ -319,7 +319,7 @@ export function Pricing({ pricingData, dict, lang = 'en' }: PricingProps) {
             <div>
               <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{isZh ? '兜底逻辑' : 'Fallback'}</p>
               <p className="mt-2 text-sm text-foreground">
-                {isZh ? '即使价格数据缺失，页面也依然会把用户引导到注册或联系销售。' : 'If pricing data is missing, the page still routes users to signup or contact.'}
+                {isZh ? '即使价格数据缺失，页面也依然会把用户引导到注册页。' : 'If pricing data is missing, the page still routes users to signup.'}
               </p>
             </div>
             <div>

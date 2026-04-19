@@ -23,9 +23,7 @@ const LANGS = getLangs();
 const STATIC_ROUTES = [
   '', // home
   'blog',
-  'cases',
   'features',
-  'contact',
   'pricing',
   'about',
 ];

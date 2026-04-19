@@ -100,7 +100,7 @@ export function SubmitCaseCTA({ lang = "en", dict }: { lang?: string; dict?: any
         {dict?.cases?.shareSubtitle || "Have a project you'd like to showcase? We'd love to feature your success story."}
       </p>
       <Link
-        href={`/${lang}/contact`}
+        href={`/${lang}/signup`}
         className="inline-flex items-center bg-primary text-white px-6 py-3 rounded-lg font-medium hover:bg-primary/90 transition-colors"
       >
         {dict?.cases?.submitYourCase || "Submit Your Case"}

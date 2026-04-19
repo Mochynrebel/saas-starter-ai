@@ -47,9 +47,7 @@
       { "name": "AI", "href": "/ai" },
       { "name": "Pricing", "href": "/pricing" },
       { "name": "Blog", "href": "/blog" },
-      { "name": "Cases", "href": "/cases" },
-      { "name": "Contact", "href": "/contact" },
-      { "name": "Blocks", "href": "/blocks" }
+      { "name": "About", "href": "/about" }
     ],
     "cta": {
       "text": "Get Started",
@@ -63,16 +61,14 @@
         "links": [
           { "name": "Features", "href": "/features" },
           { "name": "Pricing", "href": "/pricing" },
-          { "name": "Blocks", "href": "/blocks" },
-          { "name": "Case Studies", "href": "/cases" },
+          { "name": "About", "href": "/about" },
           { "name": "Blog", "href": "/blog" }
         ]
       },
       {
         "title": "Company",
         "links": [
-          { "name": "About", "href": "/about" },
-          { "name": "Contact", "href": "/contact" }
+          { "name": "About", "href": "/about" }
         ]
       }
     ]

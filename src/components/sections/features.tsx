@@ -9,8 +9,6 @@ interface FeaturesProps {
     features: {
       title?: string
       description?: string
-      andMoreText?: string
-      componentsLinkText?: string
       main: {
         icon: string
         title: string
@@ -25,23 +23,6 @@ export function Features({ dict }: FeaturesProps) {
   const pathname = usePathname()
   const currentLang = pathname.split("/")[1] || "en"
 
-  // Bottom CTA content
-  const bottomContent = dict?.features?.componentsLinkText ? (
-    <div className="text-center">
-      <div className="inline-flex items-center space-x-2 text-sm text-muted-foreground">
-        <span>{dict?.features?.andMoreText || "And much more..."}</span>
-        <span className="text-primary">→</span>
-        <a
-          href={`/${currentLang}/blocks`}
-          className="font-medium text-primary hover:text-primary/80 transition-colors underline-offset-4 hover:underline"
-        >
-          {dict?.features?.componentsLinkText ||
-            "30+ Components Ready to Use"}
-        </a>
-      </div>
-    </div>
-  ) : undefined
-
   return (
     <SectionLayout
       id="features"
@@ -49,7 +30,6 @@ export function Features({ dict }: FeaturesProps) {
       description={dict?.features?.description}
       locale={currentLang}
       background="muted"
-      bottomContent={bottomContent}
     >
       <FeaturesGrid features={features} />
     </SectionLayout>

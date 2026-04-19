@@ -47,9 +47,7 @@
       { "name": "AI", "href": "/ai" },
       { "name": "价格", "href": "/pricing" },
       { "name": "博客", "href": "/blog" },
-      { "name": "案例", "href": "/cases" },
-      { "name": "联系我们", "href": "/contact" },
-      { "name": "组件", "href": "/blocks" }
+      { "name": "关于我们", "href": "/about" }
     ],
     "cta": {
       "text": "立即开始",
@@ -63,16 +61,14 @@
         "links": [
           { "name": "功能特性", "href": "/features" },
           { "name": "价格", "href": "/pricing" },
-          { "name": "组件", "href": "/blocks" },
-          { "name": "案例研究", "href": "/cases" },
+          { "name": "关于我们", "href": "/about" },
           { "name": "博客", "href": "/blog" }
         ]
       },
       {
         "title": "公司",
         "links": [
-          { "name": "关于我们", "href": "/about" },
-          { "name": "联系我们", "href": "/contact" }
+          { "name": "关于我们", "href": "/about" }
         ]
       }
     ]
