@@ -60,6 +60,7 @@ interface GeneratorConfig {
   referenceImageHint?: string
   referenceImageRequired?: string
   imageToImageModelUnsupported?: string
+  exampleImages?: Array<{ imageUrl: string; alt: string }>
 }
 
 interface AIImageGeneratorProps {
@@ -509,6 +510,7 @@ export function AIImageGenerator({ config }: AIImageGeneratorProps) {
           onDownload={handleDownload}
           isGenerating={isGenerating}
           hasError={!!error}
+          exampleImages={config.exampleImages}
         />
       </div>
     </div>

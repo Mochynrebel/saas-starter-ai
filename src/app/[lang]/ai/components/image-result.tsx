@@ -1,8 +1,14 @@
 "use client"
 
+import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { Download, Image as ImageIcon } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Download, Image as ImageIcon } from 'lucide-react'
 import { ImageLoading } from './image-loading'
+
+interface ExampleImage {
+  imageUrl: string
+  alt: string
+}
 
 interface ImageResultProps {
   imageUrl: string | null
@@ -13,6 +19,7 @@ interface ImageResultProps {
   onDownload: () => void
   isGenerating?: boolean
   hasError?: boolean
+  exampleImages?: ExampleImage[]
 }
 
 export function ImageResult({
@@ -23,8 +30,24 @@ export function ImageResult({
   downloadText,
   onDownload,
   isGenerating = false,
-  hasError = false
+  hasError = false,
+  exampleImages = [],
 }: ImageResultProps) {
+  const [activeIndex, setActiveIndex] = useState(0)
+  const hasExamples = exampleImages.length > 0
+
+  const showPrevious = () => {
+    setActiveIndex((current) =>
+      current === 0 ? exampleImages.length - 1 : current - 1
+    )
+  }
+
+  const showNext = () => {
+    setActiveIndex((current) =>
+      current === exampleImages.length - 1 ? 0 : current + 1
+    )
+  }
+
   return (
     <div className="h-full flex flex-col p-6 min-h-0">
       <div className="mb-4 flex items-center justify-between h-6 flex-shrink-0">
@@ -54,6 +77,54 @@ export function ImageResult({
               alt={prompt}
               className="w-full h-full object-cover"
             />
+          </div>
+        ) : hasExamples ? (
+          <div className="relative h-full w-full bg-muted/10">
+            <img
+              src={exampleImages[activeIndex].imageUrl}
+              alt={exampleImages[activeIndex].alt}
+              className="h-full w-full object-cover"
+            />
+
+            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/65 to-transparent p-4 text-white">
+              <p className="text-sm font-medium">{exampleImages[activeIndex].alt}</p>
+              <div className="mt-3 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  {exampleImages.map((_, index) => (
+                    <button
+                      key={index}
+                      type="button"
+                      onClick={() => setActiveIndex(index)}
+                      className={`h-2.5 w-2.5 rounded-full transition-all ${
+                        index === activeIndex ? 'bg-white' : 'bg-white/45'
+                      }`}
+                      aria-label={`Go to example ${index + 1}`}
+                    />
+                  ))}
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="icon"
+                    className="h-9 w-9 rounded-full bg-white/90 text-black hover:bg-white"
+                    onClick={showPrevious}
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="icon"
+                    className="h-9 w-9 rounded-full bg-white/90 text-black hover:bg-white"
+                    onClick={showNext}
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </div>
           </div>
         ) : (
           <div className={`w-full h-full flex items-center justify-center text-center p-4 ${hasError ? 'text-destructive' : 'text-muted-foreground'}`}>

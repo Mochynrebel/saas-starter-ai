@@ -33,6 +33,20 @@ export default async function AIPage({ params }: { params: Promise<{ lang: Local
     failedToFetchCost: aiConfig.generator.failedToFetchCost,
     imageGenerationTimeout: aiConfig.generator.imageGenerationTimeout,
     modelNotConfigured: aiConfig.generator.modelNotConfigured,
+    exampleImages: [
+      {
+        imageUrl: '/images/cases/case1.png',
+        alt: lang === 'zh' ? '产品广告示例图' : 'Product advertising example',
+      },
+      {
+        imageUrl: '/images/cases/case2.png',
+        alt: lang === 'zh' ? '人物风格示例图' : 'Portrait style example',
+      },
+      {
+        imageUrl: '/images/cases/case3.png',
+        alt: lang === 'zh' ? '空间氛围示例图' : 'Interior mood example',
+      },
+    ],
   };
 
   return (
