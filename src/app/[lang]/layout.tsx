@@ -3,6 +3,7 @@ import { AuthProvider } from '@/contexts/AuthContext'
 import { Locale, locales } from '@/lib/i18n'
 import { generateMetadata as generateI18nMetadata } from '@/lib/metadata'
 import { getServerUser } from '@/lib/auth-server'
+import { withCanonical } from '@/lib/seo'
 import '../globals.css'
 
 export async function generateMetadata({
@@ -13,7 +14,7 @@ export async function generateMetadata({
   const { lang } = await params;
   // 确保 lang 是有效的 Locale 类型
   const validLang = locales.includes(lang as Locale) ? (lang as Locale) : 'en';
-  return await generateI18nMetadata(validLang)
+  return withCanonical(await generateI18nMetadata(validLang), validLang)
 }
 
 // Generate all language paths for static export

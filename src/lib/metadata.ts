@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { getDictionary } from './dictionaries'
 import { Locale } from './i18n'
+import { buildCanonicalUrl, buildLanguageAlternates, siteUrl } from './seo'
 
 export async function generateMetadata(locale: Locale): Promise<Metadata> {
   const dict = await getDictionary(locale)
@@ -24,6 +25,7 @@ export async function generateMetadata(locale: Locale): Promise<Metadata> {
   ]
   
   return {
+    metadataBase: new URL(siteUrl),
     title: {
       default: defaultTitle,
       template: `%s | ${siteName}`
@@ -35,10 +37,14 @@ export async function generateMetadata(locale: Locale): Promise<Metadata> {
     openGraph: {
       type: 'website',
       locale: locale === 'zh' ? 'zh_CN' : 'en_US',
-      url: 'https://edgeone-saas-starter.com',
+      url: buildCanonicalUrl(locale),
       title: defaultTitle,
       description,
       siteName,
+    },
+    alternates: {
+      canonical: buildCanonicalUrl(locale),
+      languages: buildLanguageAlternates(),
     },
     twitter: {
       card: 'summary_large_image',

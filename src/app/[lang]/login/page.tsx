@@ -4,6 +4,7 @@ import { Layout } from '@/components/layout/layout'
 import LoginForm from './login-form'
 import { getServerUser } from '@/lib/auth-server'
 import { redirect } from 'next/navigation'
+import { withCanonical } from '@/lib/seo'
 
 interface LoginPageProps {
   params: Promise<{ lang: Locale }>;
@@ -16,10 +17,14 @@ export async function generateMetadata({
 }) {
   const { lang } = await params;
   const dict = await getDictionary(lang)
-  return {
+  return withCanonical({
     title: dict.auth?.login?.title || 'Sign In',
     description: dict.auth?.login?.subtitle || 'Sign in to your account',
-  }
+    robots: {
+      index: false,
+      follow: false,
+    },
+  }, lang, '/login')
 }
 
 export default async function LoginPage({ params }: LoginPageProps) {

@@ -3,6 +3,7 @@ import { BlogCard } from '@/components/ui/blog-card'
 import { getAllPosts } from '@/lib/blog'
 import { getDictionary } from '@/lib/dictionaries'
 import { Locale, locales } from '@/lib/i18n'
+import { withCanonical } from '@/lib/seo'
 import { getHighlightedText } from '@/lib/text-highlight'
 import { Layout } from '@/components/layout/layout'
 
@@ -12,6 +13,20 @@ export async function generateStaticParams() {
   return locales.map((locale) => ({
     lang: locale
   }));
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ lang: Locale }> }) {
+  const { lang } = await params;
+  const dict = await getDictionary(lang);
+
+  return withCanonical(
+    {
+      title: dict.blog.pageTitle,
+      description: dict.blog.pageSubtitle,
+    },
+    lang,
+    '/blog'
+  )
 }
 
 export default async function BlogPage({params}: {params: Promise<{lang: Locale}>}) {

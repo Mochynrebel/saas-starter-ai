@@ -7,11 +7,12 @@ import { defaultLocale } from '@/lib/i18n'
 import { generateMetadata as generateI18nMetadata } from '@/lib/metadata'
 import { getServerUser } from '@/lib/auth-server'
 import { AILandingPageContent } from './[lang]/ai/ai-landing-page-content'
+import { withCanonical } from '@/lib/seo'
 
 export const dynamic = 'force-static'
 
 export async function generateMetadata() {
-  return generateI18nMetadata(defaultLocale)
+  return withCanonical(await generateI18nMetadata(defaultLocale), defaultLocale)
 }
 
 export default async function RootPage() {

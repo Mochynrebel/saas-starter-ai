@@ -7,8 +7,27 @@ import { MinimalCTA } from "@/components/sections/cta-section";
 import { getDictionary } from "@/lib/dictionaries";
 import { Locale } from "@/lib/i18n";
 import { getPricingData } from "@/lib/pricing-server";
+import { withCanonical } from "@/lib/seo";
 
 export const dynamic = 'force-static';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ lang: Locale }>;
+}) {
+  const { lang } = await params;
+  const dict = await getDictionary(lang);
+
+  return withCanonical(
+    {
+      title: dict.pricing.title,
+      description: dict.pricing.pageSubtitle,
+    },
+    lang,
+    '/pricing'
+  )
+}
 
 export default async function PricingPage({
   params,

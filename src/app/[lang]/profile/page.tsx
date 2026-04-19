@@ -3,6 +3,7 @@ import { ProfileContent } from './profile-content'
 import { Layout } from '@/components/layout/layout'
 import { getDictionary } from '@/lib/dictionaries'
 import { Locale } from '@/lib/i18n'
+import { withCanonical } from '@/lib/seo'
 
 interface ProfilePageProps {
   params: Promise<{
@@ -16,10 +17,14 @@ export async function generateMetadata({
   const { lang } = await params;
   const dict = await getDictionary(lang)
   
-  return {
+  return withCanonical({
     title: dict?.profile?.title || 'Profile',
     description: dict?.profile?.description || 'Manage your profile and subscriptions',
-  }
+    robots: {
+      index: false,
+      follow: false,
+    },
+  }, lang, '/profile')
 }
 
 export default async function ProfilePage({

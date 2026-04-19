@@ -4,6 +4,7 @@ import { Layout } from '@/components/layout/layout'
 import SignupForm from './signup-form'
 import { getServerUser } from '@/lib/auth-server'
 import { redirect } from 'next/navigation'
+import { withCanonical } from '@/lib/seo'
 
 interface SignupPageProps {
   params: Promise<{ lang: Locale }>;
@@ -16,10 +17,14 @@ export async function generateMetadata({
 }) {
   const { lang } = await params;
   const dict = await getDictionary(lang)
-  return {
+  return withCanonical({
     title: dict.auth?.signup?.title || 'Sign Up',
     description: dict.auth?.signup?.subtitle || 'Create your account',
-  }
+    robots: {
+      index: false,
+      follow: false,
+    },
+  }, lang, '/signup')
 }
 
 export default async function SignupPage({ params }: SignupPageProps) {

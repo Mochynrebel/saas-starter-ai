@@ -7,6 +7,7 @@ import { getPostBySlug, getAllPosts } from '@/lib/blog'
 import { getDictionary } from '@/lib/dictionaries'
 import { formatDate } from '@/lib/utils'
 import Link from 'next/link'
+import { withCanonical } from '@/lib/seo'
 
 export const dynamic = 'force-static'
 
@@ -43,10 +44,14 @@ export async function generateMetadata({ params }: BlogPostPageProps) {
     }
   }
 
-  return {
-    title: `${post.title}`,
-    description: post.excerpt,
-  }
+  return withCanonical(
+    {
+      title: `${post.title}`,
+      description: post.excerpt,
+    },
+    lang as 'en' | 'zh',
+    `/blog/${slug}`
+  )
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {

@@ -5,9 +5,28 @@ import { Layout } from "@/components/layout/layout";
 import { SectionLayout } from "@/components/layout/section-layout";
 import { getDictionary } from "@/lib/dictionaries";
 import { Locale } from "@/lib/i18n";
+import { withCanonical } from "@/lib/seo";
 import { FeaturesClient, HeroFeatures, SupportFeatures } from "./features-client";
 
 export const dynamic = 'force-static';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ lang: Locale }>;
+}) {
+  const { lang } = await params;
+  const dict = await getDictionary(lang);
+
+  return withCanonical(
+    {
+      title: dict.features.page.title,
+      description: dict.features.page.subtitle,
+    },
+    lang,
+    '/features'
+  )
+}
 
 export default async function FeaturesPage({
   params,
