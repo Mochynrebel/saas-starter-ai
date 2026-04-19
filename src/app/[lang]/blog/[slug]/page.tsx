@@ -8,6 +8,8 @@ import { getDictionary } from '@/lib/dictionaries'
 import { formatDate } from '@/lib/utils'
 import Link from 'next/link'
 import { withCanonical } from '@/lib/seo'
+import { JsonLd } from '@/components/seo/json-ld'
+import { buildArticleStructuredData } from '@/lib/structured-data'
 
 export const dynamic = 'force-static'
 
@@ -63,8 +65,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     notFound()
   }
 
+  const articleStructuredData = buildArticleStructuredData(lang as 'en' | 'zh', post)
+
   return (
     <Layout dict={dict}>
+      <JsonLd data={articleStructuredData} />
       <div className="pt-24">
         <main>
         <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
