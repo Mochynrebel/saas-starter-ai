@@ -60,7 +60,7 @@ export function Header({ dict, initialUser }: HeaderProps) {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex items-center h-16">
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link href={getLocalizedHref('/')} className="text-2xl font-bold text-primary">
@@ -68,26 +68,26 @@ export function Header({ dict, initialUser }: HeaderProps) {
             </Link>
           </div>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex space-x-8">
-            {headerConfig.navigation.map((item) => (
-              <Link
-                prefetch={true}
-                key={item.name}
-                href={getLocalizedHref(item.href)}
-                 className={`transition-colors duration-200 whitespace-nowrap ${
-                  isActive(item.href)
-                    ? 'text-primary font-semibold border-b-2 border-primary'
-                    : 'text-foreground hover:text-primary'
-                }`}
-              >
-                {item.name}
-              </Link>
-            ))}
-          </nav>
-
           {/* Right side */}
-          <div className="flex items-center space-x-4">
+          <div className="ml-auto flex items-center space-x-4">
+            {/* Desktop Navigation */}
+            <nav className="hidden md:flex items-center space-x-8 pr-1">
+              {headerConfig.navigation.map((item) => (
+                <Link
+                  prefetch={true}
+                  key={item.name}
+                  href={getLocalizedHref(item.href)}
+                   className={`transition-colors duration-200 whitespace-nowrap ${
+                    isActive(item.href)
+                      ? 'text-primary font-semibold border-b-2 border-primary'
+                      : 'text-foreground hover:text-primary'
+                  }`}
+                >
+                  {item.name}
+                </Link>
+              ))}
+            </nav>
+
             {/* Language Switcher */}
             <LanguageSwitcher currentLang={currentLang} dict={dict} />
             

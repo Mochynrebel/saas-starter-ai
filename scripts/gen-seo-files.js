@@ -25,7 +25,6 @@ const STATIC_ROUTES = [
   'blog',
   'features',
   'pricing',
-  'about',
 ];
 
 // 2. 生成 robots.txt

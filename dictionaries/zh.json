@@ -46,8 +46,7 @@
     "navigation": [
       { "name": "AI", "href": "/ai" },
       { "name": "价格", "href": "/pricing" },
-      { "name": "博客", "href": "/blog" },
-      { "name": "关于我们", "href": "/about" }
+      { "name": "博客", "href": "/blog" }
     ],
     "cta": {
       "text": "立即开始",
@@ -61,15 +60,12 @@
         "links": [
           { "name": "功能特性", "href": "/features" },
           { "name": "价格", "href": "/pricing" },
-          { "name": "关于我们", "href": "/about" },
           { "name": "博客", "href": "/blog" }
         ]
       },
       {
         "title": "公司",
-        "links": [
-          { "name": "关于我们", "href": "/about" }
-        ]
+        "links": []
       }
     ]
   },

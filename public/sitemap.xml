@@ -41,16 +41,6 @@
     <xhtml:link rel="alternate" hreflang="zh" href="https://saas-starter.edgeone.app/zh/pricing" />
   </url>
   <url>
-    <loc>https://saas-starter.edgeone.app/en/about</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://saas-starter.edgeone.app/en/about" />
-    <xhtml:link rel="alternate" hreflang="zh" href="https://saas-starter.edgeone.app/zh/about" />
-  </url>
-  <url>
-    <loc>https://saas-starter.edgeone.app/zh/about</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://saas-starter.edgeone.app/en/about" />
-    <xhtml:link rel="alternate" hreflang="zh" href="https://saas-starter.edgeone.app/zh/about" />
-  </url>
-  <url>
     <loc>https://saas-starter.edgeone.app/en/blog/nextjs-best-practices</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://saas-starter.edgeone.app/en/blog/nextjs-best-practices" />
     <xhtml:link rel="alternate" hreflang="zh" href="https://saas-starter.edgeone.app/zh/blog/nextjs-best-practices" />
