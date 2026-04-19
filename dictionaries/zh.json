@@ -44,7 +44,6 @@
   },
   "header": {
     "navigation": [
-      { "name": "首页", "href": "/" },
       { "name": "AI", "href": "/ai" },
       { "name": "价格", "href": "/pricing" },
       { "name": "博客", "href": "/blog" },

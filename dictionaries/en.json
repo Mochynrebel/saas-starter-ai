@@ -44,7 +44,6 @@
   },
   "header": {
     "navigation": [
-      { "name": "Home", "href": "/" },
       { "name": "AI", "href": "/ai" },
       { "name": "Pricing", "href": "/pricing" },
       { "name": "Blog", "href": "/blog" },

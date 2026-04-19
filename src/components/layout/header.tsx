@@ -41,7 +41,7 @@ export function Header({ dict, initialUser }: HeaderProps) {
   // Add language prefix to navigation links
   const getLocalizedHref = (href: string) => {
     if (href === '/') {
-      return `/${currentLang}`
+      return `/${currentLang}/ai`
     }
     return `/${currentLang}${href}`
   }
