@@ -4,28 +4,46 @@ import { Locale } from './i18n'
 
 export async function generateMetadata(locale: Locale): Promise<Metadata> {
   const dict = await getDictionary(locale)
+  const siteName = 'Use GPT Image 2'
+  const defaultTitle = 'Use GPT Image 2 | Chat GPT Images Generator | Realistic AI'
+  const description =
+    'Create high-quality Chat GPT images using our realistic AI generator. Use GPT Image 2 supports image prompts, editing, and fast generation. Try the best Chat GPT Images Generator online.'
+  const keywords = [
+    'AI image generation',
+    'chat gpt images',
+    'chat gpt for images',
+    'chat gpt prompts cool images',
+    'chat gpt image editor',
+    'gpt image 2',
+    'gpt-image-2',
+    'gpt 2 image generation',
+    'gpt image 2 release date',
+    'gpt-2 image generation',
+    'gpt-image-2 release date',
+    'gpt-2 image',
+  ]
   
   return {
     title: {
-      default: dict.metadata.defaultTitle,
-      template: dict.metadata.titleTemplate
+      default: defaultTitle,
+      template: `%s | ${siteName}`
     },
-    description: dict.metadata.description,
-    keywords: dict.metadata.keywords.split(', '),
-    authors: [{ name: dict.metadata.author }],
-    creator: dict.metadata.creator,
+    description,
+    keywords,
+    authors: [{ name: siteName }],
+    creator: siteName,
     openGraph: {
       type: 'website',
       locale: locale === 'zh' ? 'zh_CN' : 'en_US',
       url: 'https://edgeone-saas-starter.com',
-      title: dict.metadata.defaultTitle,
-      description: dict.metadata.description,
-      siteName: dict.metadata.siteName,
+      title: defaultTitle,
+      description,
+      siteName,
     },
     twitter: {
       card: 'summary_large_image',
-      title: dict.metadata.defaultTitle,
-      description: dict.metadata.description,
+      title: defaultTitle,
+      description,
       creator: dict.metadata.twitterCreator,
     },
     robots: {
