@@ -1,5 +1,13 @@
+export type GenerationMode = 'text-to-image' | 'image-to-image'
+
+interface ModelOption {
+  value: string
+  label: string
+  modes: GenerationMode[]
+}
+
 // Model to supported size mapping configuration
-// Based on AI SDK documentation and model specifications
+// Based on provider documentation and validated runtime behavior
 export const modelSizeMapping: Record<string, string[]> = {
   // Fireworks Models
   'accounts/fireworks/models/stable-diffusion-xl-1024-v1-0': ['1024x1024'],
@@ -12,6 +20,7 @@ export const modelSizeMapping: Record<string, string[]> = {
   'fal-ai/flux-pro/v1.1': ['1024x1024'],
   
   // OpenAI Models - Based on OpenAI API documentation
+  'gpt-image-1': ['1024x1024'],
   'dall-e-3': ['1024x1024', '1024x1792', '1792x1024'],
   'dall-e-2': ['256x256', '512x512', '1024x1024'],
   
@@ -58,35 +67,48 @@ export function getDefaultSize(model: string): string {
 }
 
 // Model options list
-export const modelOptions = [
+export const modelOptions: ModelOption[] = [
+  { value: 'gpt-image-1', label: 'OpenAI/GPT Image 1', modes: ['text-to-image', 'image-to-image'] },
   // FAL Models (first - default)
-  { value: 'fal-ai/flux/schnell', label: 'FAL/FLUX Schnell' },
+  { value: 'fal-ai/flux/schnell', label: 'FAL/FLUX Schnell', modes: ['text-to-image'] },
   // { value: 'fal-ai/flux/dev', label: 'FAL/FLUX Dev' },
   // { value: 'fal-ai/flux-pro/v1.1', label: 'FAL/FLUX Pro V1.1' },
   
   // Fireworks Models
-  { value: 'accounts/fireworks/models/stable-diffusion-xl-1024-v1-0', label: 'Fireworks/Stable Diffusion XL 1024 V1.0' },
+  { value: 'accounts/fireworks/models/stable-diffusion-xl-1024-v1-0', label: 'Fireworks/Stable Diffusion XL 1024 V1.0', modes: ['text-to-image'] },
   // { value: 'accounts/fireworks/models/playground-v2-1024px-aesthetic', label: 'Fireworks/Playground V2 1024px Aesthetic' },
   // { value: 'accounts/fireworks/models/flux-1-dev-fp8', label: 'Fireworks/FLUX 1 Dev FP8' },
   
   // OpenAI Models (enabled)
   // { value: 'dall-e-3', label: 'OpenAI/DALL-E 3' },
-  { value: 'dall-e-2', label: 'OpenAI/DALL-E 2' },
+  { value: 'dall-e-2', label: 'OpenAI/DALL-E 2', modes: ['text-to-image'] },
   
   // Replicate Models (enabled) - older but stable versions
-  { value: 'stability-ai/stable-diffusion-3.5-medium', label: 'Replicate/Stable Diffusion 3.5 Medium' },
-  { value: 'stability-ai/stable-diffusion-3.5-large', label: 'Replicate/Stable Diffusion 3.5 Large' },
+  { value: 'stability-ai/stable-diffusion-3.5-medium', label: 'Replicate/Stable Diffusion 3.5 Medium', modes: ['text-to-image'] },
+  { value: 'stability-ai/stable-diffusion-3.5-large', label: 'Replicate/Stable Diffusion 3.5 Large', modes: ['text-to-image'] },
   
   // Google Models (enabled)
-  { value: 'imagen-3.0-generate-002', label: 'Google/Imagen 3.0 Generate 002' },
+  { value: 'imagen-3.0-generate-002', label: 'Google/Imagen 3.0 Generate 002', modes: ['text-to-image'] },
   
   // DeepInfra Models (enabled)
-  { value: 'stabilityai/sdxl-turbo', label: 'DeepInfra/Stable Diffusion XL Turbo' },
-  { value: 'black-forest-labs/FLUX-1-dev', label: 'DeepInfra/FLUX 1 Dev' },
-  { value: 'black-forest-labs/FLUX-1-schnell', label: 'DeepInfra/FLUX 1 Schnell' },
+  { value: 'stabilityai/sdxl-turbo', label: 'DeepInfra/Stable Diffusion XL Turbo', modes: ['text-to-image'] },
+  { value: 'black-forest-labs/FLUX-1-dev', label: 'DeepInfra/FLUX 1 Dev', modes: ['text-to-image'] },
+  { value: 'black-forest-labs/FLUX-1-schnell', label: 'DeepInfra/FLUX 1 Schnell', modes: ['text-to-image'] },
   
   // Luma Models (enabled)
-  { value: 'photon-1', label: 'Luma/Photon 1' },
-  { value: 'photon-flash-1', label: 'Luma/Photon Flash 1' }
+  { value: 'photon-1', label: 'Luma/Photon 1', modes: ['text-to-image'] },
+  { value: 'photon-flash-1', label: 'Luma/Photon Flash 1', modes: ['text-to-image'] }
 ]
+
+export function getModelsForMode(mode: GenerationMode): ModelOption[] {
+  return modelOptions.filter((option) => option.modes.includes(mode))
+}
+
+export function isModelSupportedForMode(model: string, mode: GenerationMode): boolean {
+  return modelOptions.some((option) => option.value === model && option.modes.includes(mode))
+}
+
+export function getDefaultModelForMode(mode: GenerationMode): string {
+  return getModelsForMode(mode)[0]?.value ?? modelOptions[0]?.value ?? 'gpt-image-1'
+}
 

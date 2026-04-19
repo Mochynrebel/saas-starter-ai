@@ -11,6 +11,7 @@ interface ModelSelectorProps {
   label: string
   placeholder: string
   modelNotConfiguredText?: string
+  allowedModels?: string[]
 }
 
 interface ModelStatus {
@@ -29,7 +30,14 @@ const buildApiUrl = (path: string) => {
   return `/api${apiPath}`
 }
 
-export function ModelSelector({ value, onChange, label, placeholder, modelNotConfiguredText }: ModelSelectorProps) {
+export function ModelSelector({
+  value,
+  onChange,
+  label,
+  placeholder,
+  modelNotConfiguredText,
+  allowedModels,
+}: ModelSelectorProps) {
   const [open, setOpen] = useState(false)
   const [modelStatuses, setModelStatuses] = useState<ModelStatus[]>([])
   const [availableModels, setAvailableModels] = useState<Set<string>>(new Set())
@@ -61,6 +69,10 @@ export function ModelSelector({ value, onChange, label, placeholder, modelNotCon
     ? modelStatuses 
     : modelOptions.map(opt => ({ value: opt.value, label: opt.label, configured: true }))
 
+  const filteredModels = allowedModels?.length
+    ? modelsToDisplay.filter((model) => allowedModels.includes(model.value))
+    : modelsToDisplay
+
   const handleValueChange = (newValue: string) => {
     const isConfigured = availableModels.has(newValue)
     if (isConfigured) {
@@ -87,9 +99,9 @@ export function ModelSelector({ value, onChange, label, placeholder, modelNotCon
           sideOffset={2}
         >
           <Select.Viewport>
-            {modelsToDisplay.map((model, index) => {
+            {filteredModels.map((model, index) => {
               const isFirst = index === 0
-              const isLast = index === modelsToDisplay.length - 1
+              const isLast = index === filteredModels.length - 1
               const roundedClass = isFirst ? 'rounded-t-lg' : isLast ? 'rounded-b-lg' : ''
               const isConfigured = availableModels.has(model.value) || model.configured
               const isDisabled = !isConfigured

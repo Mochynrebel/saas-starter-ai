@@ -482,14 +482,27 @@ export interface Dictionary {
       failedToFetchCost?: string;
       imageGenerationTimeout?: string;
       modelNotConfigured?: string;
+      textToImage?: string;
+      imageToImage?: string;
+      referenceImageLabel?: string;
+      uploadReferenceImage?: string;
+      replaceReferenceImage?: string;
+      removeReferenceImage?: string;
+      referenceImageHint?: string;
+      referenceImageRequired?: string;
     };
     api?: {
       userAuthenticationRequired: string;
       invalidJsonBody: string;
+      invalidGenerationMode: string;
       promptRequired: string;
       modelRequired: string;
       unsupportedSize: string;
       unsupportedModel: string;
+      imageToImageModelUnsupported: string;
+      referenceImageRequired: string;
+      invalidReferenceImage: string;
+      referenceImageTooLarge: string;
       notEnoughCredits: string;
       apiKeyNotConfigured: string;
       generationFailed: string;

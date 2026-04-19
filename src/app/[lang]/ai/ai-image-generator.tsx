@@ -3,13 +3,21 @@
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Image as ImageIcon } from 'lucide-react'
-import { modelOptions, getSupportedSizes, getDefaultSize } from '@/lib/ai-models'
+import {
+  GenerationMode,
+  getDefaultModelForMode,
+  getModelsForMode,
+  getDefaultSize,
+  getSupportedSizes,
+  isModelSupportedForMode,
+} from '@/lib/ai-models'
 import { ModelSelector } from './components/model-selector'
 import { SizeSelector } from './components/size-selector'
 import { PromptInput } from './components/prompt-input'
 import { ImageResult } from './components/image-result'
 import { ErrorMessage } from './components/error-message'
 import { ImageHistoryCarousel } from './components/image-history-carousel'
+import { InputImagePanel } from './components/input-image-panel'
 
 interface GeneratorConfig {
   title: string
@@ -43,6 +51,15 @@ interface GeneratorConfig {
   failedToFetchCost?: string
   imageGenerationTimeout?: string
   modelNotConfigured?: string
+  textToImage?: string
+  imageToImage?: string
+  referenceImageLabel?: string
+  uploadReferenceImage?: string
+  replaceReferenceImage?: string
+  removeReferenceImage?: string
+  referenceImageHint?: string
+  referenceImageRequired?: string
+  imageToImageModelUnsupported?: string
 }
 
 interface AIImageGeneratorProps {
@@ -69,13 +86,15 @@ const buildApiUrl = (path: string) => {
 const GENERATION_TIMEOUT_MS = 30_000;
 
 export function AIImageGenerator({ config }: AIImageGeneratorProps) {
-  // Default to FAL/FLUX Schnell (first option)
-  const defaultModel = modelOptions[0]?.value ?? 'fal-ai/flux/schnell'
-  const [model, setModel] = useState(defaultModel)
-  const [size, setSize] = useState(getDefaultSize(defaultModel))
-  const [availableSizes, setAvailableSizes] = useState<string[]>(getSupportedSizes(defaultModel))
+  const [mode, setMode] = useState<GenerationMode>('text-to-image')
+  const modeModels = getModelsForMode(mode)
+  const [model, setModel] = useState(getDefaultModelForMode('text-to-image'))
+  const [size, setSize] = useState(getSupportedSizes(getDefaultModelForMode('text-to-image'))[0] ?? '1024x1024')
+  const [availableSizes, setAvailableSizes] = useState<string[]>(getSupportedSizes(getDefaultModelForMode('text-to-image')))
   const [prompt, setPrompt] = useState('')
   const [imageUrl, setImageUrl] = useState<string | null>(null)
+  const [sourceImage, setSourceImage] = useState<File | null>(null)
+  const [sourceImagePreviewUrl, setSourceImagePreviewUrl] = useState<string | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [imageHistory, setImageHistory] = useState<Array<{ imageUrl: string; prompt: string }>>([])
@@ -85,6 +104,14 @@ export function AIImageGenerator({ config }: AIImageGeneratorProps) {
   const [balanceError, setBalanceError] = useState<string | null>(null)
   const [creditCost, setCreditCost] = useState<number>(1)
   const [isFetchingCost, setIsFetchingCost] = useState<boolean>(true)
+
+  useEffect(() => {
+    if (!isModelSupportedForMode(model, mode)) {
+      const fallbackModel = getDefaultModelForMode(mode)
+      setModel(fallbackModel)
+      setSize(getSupportedSizes(fallbackModel)[0] ?? '1024x1024')
+    }
+  }, [mode, model])
 
   // Update available sizes when model changes
   useEffect(() => {
@@ -101,6 +128,14 @@ export function AIImageGenerator({ config }: AIImageGeneratorProps) {
     fetchCreditCost()
     fetchCreditsBalance()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    return () => {
+      if (sourceImagePreviewUrl) {
+        URL.revokeObjectURL(sourceImagePreviewUrl)
+      }
+    }
+  }, [sourceImagePreviewUrl])
 
   useEffect(() => {
     updateCreditAvailability(creditsBalance, creditCost)
@@ -181,6 +216,11 @@ export function AIImageGenerator({ config }: AIImageGeneratorProps) {
       return
     }
 
+    if (mode === 'image-to-image' && !sourceImage) {
+      setError(config.referenceImageRequired || 'Please upload a reference image first.')
+      return
+    }
+
     setIsGenerating(true)
     setError(null)
     setImageUrl(null)
@@ -193,18 +233,32 @@ export function AIImageGenerator({ config }: AIImageGeneratorProps) {
       : null
 
     try {
-      const response = await fetch(buildApiUrl('/ai/generate'), {
+      const requestInit: RequestInit = {
         method: 'POST',
-        headers: {
-          'content-type': 'application/json'
-        },
         signal: controller?.signal,
-        body: JSON.stringify({
+      }
+
+      if (mode === 'image-to-image' && sourceImage) {
+        const formData = new FormData()
+        formData.append('mode', mode)
+        formData.append('prompt', prompt)
+        formData.append('model', model)
+        formData.append('size', size)
+        formData.append('sourceImage', sourceImage)
+        requestInit.body = formData
+      } else {
+        requestInit.headers = {
+          'content-type': 'application/json'
+        }
+        requestInit.body = JSON.stringify({
+          mode,
           prompt,
           model,
           size
         })
-      })
+      }
+
+      const response = await fetch(buildApiUrl('/ai/generate'), requestInit)
 
       if (!response.ok) {
         const errorJson = await response.json().catch(() => null)
@@ -242,6 +296,16 @@ export function AIImageGenerator({ config }: AIImageGeneratorProps) {
       }
       setIsGenerating(false)
     }
+  }
+
+  const handleSourceImageChange = (file: File | null) => {
+    if (sourceImagePreviewUrl) {
+      URL.revokeObjectURL(sourceImagePreviewUrl)
+    }
+
+    setSourceImage(file)
+    setError(null)
+    setSourceImagePreviewUrl(file ? URL.createObjectURL(file) : null)
   }
 
   const handleDownload = () => {
@@ -339,6 +403,7 @@ export function AIImageGenerator({ config }: AIImageGeneratorProps) {
                 icon={ImageIcon}
                 disabled={
                   !prompt.trim() ||
+                  (mode === 'image-to-image' && !sourceImage) ||
                   isGenerating ||
                   isCheckingCredits ||
                   isFetchingCost ||
@@ -352,6 +417,31 @@ export function AIImageGenerator({ config }: AIImageGeneratorProps) {
                   : config.generate}
               </Button>
             </div>
+
+            <div className="mb-5 inline-flex w-fit rounded-lg border border-border bg-muted/20 p-1">
+              <button
+                type="button"
+                onClick={() => setMode('text-to-image')}
+                className={`rounded-md px-3 py-1.5 text-sm transition-colors ${
+                  mode === 'text-to-image'
+                    ? 'bg-background text-foreground shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                {config.textToImage || 'Text to Image'}
+              </button>
+              <button
+                type="button"
+                onClick={() => setMode('image-to-image')}
+                className={`rounded-md px-3 py-1.5 text-sm transition-colors ${
+                  mode === 'image-to-image'
+                    ? 'bg-background text-foreground shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                {config.imageToImage || 'Image to Image'}
+              </button>
+            </div>
             
             <PromptInput
               value={prompt}
@@ -364,6 +454,20 @@ export function AIImageGenerator({ config }: AIImageGeneratorProps) {
               hasError={!!error}
             />
 
+            {mode === 'image-to-image' ? (
+              <div className="mb-5 flex-shrink-0">
+                <InputImagePanel
+                  imagePreviewUrl={sourceImagePreviewUrl}
+                  onFileChange={handleSourceImageChange}
+                  label={config.referenceImageLabel || 'Reference Image'}
+                  hint={config.referenceImageHint || 'Upload a PNG, JPG, or WEBP image to guide the generation.'}
+                  uploadText={config.uploadReferenceImage || 'Upload reference image'}
+                  replaceText={config.replaceReferenceImage || 'Replace'}
+                  removeText={config.removeReferenceImage || 'Remove'}
+                />
+              </div>
+            ) : null}
+
             <div className={`space-y-5 flex-shrink-0 ${error ? '' : 'mt-auto'}`}>
               <ModelSelector
                 value={model}
@@ -371,6 +475,7 @@ export function AIImageGenerator({ config }: AIImageGeneratorProps) {
                 label={config.modelLabel}
                 placeholder={config.modelPlaceholder}
                 modelNotConfiguredText={config.modelNotConfigured}
+                allowedModels={modeModels.map((item) => item.value)}
               />
 
               <SizeSelector

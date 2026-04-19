@@ -14,6 +14,7 @@ import { createFal } from '@ai-sdk/fal'
 import { createReplicate } from '@ai-sdk/replicate'
 
 export const modelProviderMap = {
+  'gpt-image-1': { provider: createOpenAI, envKey: 'OPENAI_API_KEY', envName: 'OpenAI' },
   'dall-e-3': { provider: createOpenAI, envKey: 'OPENAI_API_KEY', envName: 'OpenAI' },
   'dall-e-2': { provider: createOpenAI, envKey: 'OPENAI_API_KEY', envName: 'OpenAI' },
   'imagen-3.0-generate-002': {
@@ -83,7 +84,9 @@ export type ImageSize = '256x256' | '512x512' | '768x768' | '1024x1024' | '1024x
 export interface ParsedRequestBody {
   prompt: string
   model: string
+  mode: 'text-to-image' | 'image-to-image'
   size?: ImageSize
+  sourceImage?: File
 }
 
 export class AiRouteError extends Error {

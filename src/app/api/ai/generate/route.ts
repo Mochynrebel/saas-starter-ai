@@ -5,6 +5,10 @@ import { getUserCreditsBalance, spendCredits } from '@/lib/credits'
 import { getImageGenerationCreditCost } from '@/lib/ai-cost'
 import { getRequestDictionary } from '@/lib/api-i18n'
 import { modelProviderMap, ImageSize, ParsedRequestBody, AiRouteError } from '@/lib/ai-models-config'
+import { isModelSupportedForMode } from '@/lib/ai-models'
+
+const OPENAI_IMAGE_MODELS = new Set(['gpt-image-1'])
+const MAX_UPLOAD_BYTES = 10 * 1024 * 1024
 
 function shouldAddCorsHeaders(request: NextRequest) {
   const referer = request.headers.get('referer')
@@ -59,44 +63,35 @@ export async function POST(request: NextRequest) {
         return await createErrorResponse('UNAUTHORIZED', 'userAuthenticationRequired', 401, request)
       }
 
-      const body = await safeParseJson(request)
-      const { prompt, model, size } = await parseRequestBody(body, request)
+      const { prompt, model, size, mode, sourceImage } = await parseRequestBody(request)
       
       // Log request parameters
       console.log('[AI Generate] Request params:', {
         model,
         size,
-        promptLength: prompt?.length || 0
+        mode,
+        promptLength: prompt?.length || 0,
+        hasSourceImage: !!sourceImage,
       })
       
       const modelConfig = await resolveModelConfig(model, request)
       const balanceSnapshot = await ensureCredits(user.id, request)
-      const imageModel = await buildImageModel(modelConfig, model, request)
-      const generateOptions = buildGenerationOptions(imageModel, prompt, size)
-      
-      // Log SDK options before calling generateImage
-      console.log('[AI Generate] SDK options:', {
-        model: model,
-        size: generateOptions.size,
-        hasSize: !!generateOptions.size,
-        optionsKeys: Object.keys(generateOptions)
-      })
-      
-      // Record start time before calling AI SDK
+
       const startTime = Date.now()
       const startTimeISO = new Date().toISOString()
       console.log('[AI Generate] Start time:', startTimeISO)
+
+      const imageBase64 = mode === 'image-to-image'
+        ? await generateImageEditWithOpenAI(model, prompt, size, sourceImage, request)
+        : await generateImageFromPrompt(modelConfig, model, prompt, size, request)
       
-      const imageResult = await generateImage(generateOptions)
-      
-      // Record end time after AI generation completes
       const endTime = Date.now()
       const endTimeISO = new Date().toISOString()
       const duration = endTime - startTime
       console.log('[AI Generate] End time:', endTimeISO)
       console.log('[AI Generate] Duration:', `${duration}ms (${(duration / 1000).toFixed(2)}s)`)
 
-      return await finalizeGeneration(user.id, imageResult, balanceSnapshot, request)
+      return await finalizeGeneration(user.id, imageBase64, balanceSnapshot, request)
     } catch (error) {
       if (error instanceof AiRouteError) {
         return await createErrorResponse(error.code, error.messageKey, error.status, request, error.params)
@@ -117,18 +112,38 @@ export async function POST(request: NextRequest) {
   })
 }
 
-async function safeParseJson(request: NextRequest) {
-  try {
-    return await request.json()
-  } catch {
-    throw new AiRouteError('INVALID_BODY', 'invalidJsonBody', 400)
-  }
-}
+async function parseRequestBody(request: NextRequest): Promise<ParsedRequestBody> {
+  const contentType = request.headers.get('content-type') || ''
+  const isMultipart = contentType.includes('multipart/form-data')
 
-async function parseRequestBody(body: any, request: NextRequest): Promise<ParsedRequestBody> {
-  const prompt = body?.prompt
-  const model = body?.model
-  const size = body?.size
+  let prompt: unknown
+  let model: unknown
+  let size: unknown
+  let mode: unknown
+  let sourceImage: File | undefined
+
+  if (isMultipart) {
+    const formData = await request.formData()
+    prompt = formData.get('prompt')
+    model = formData.get('model')
+    size = formData.get('size')
+    mode = formData.get('mode')
+    const imageCandidate = formData.get('sourceImage')
+    if (imageCandidate instanceof File && imageCandidate.size > 0) {
+      sourceImage = imageCandidate
+    }
+  } else {
+    let body: any
+    try {
+      body = await request.json()
+    } catch {
+      throw new AiRouteError('INVALID_BODY', 'invalidJsonBody', 400)
+    }
+    prompt = body?.prompt
+    model = body?.model
+    size = body?.size
+    mode = body?.mode
+  }
 
   if (!prompt || typeof prompt !== 'string') {
     throw new AiRouteError('PROMPT_REQUIRED', 'promptRequired', 400)
@@ -139,13 +154,31 @@ async function parseRequestBody(body: any, request: NextRequest): Promise<Parsed
   }
 
   if (size && !isValidSize(size)) {
-    throw new AiRouteError('INVALID_SIZE', 'unsupportedSize', 400, { size })
+    throw new AiRouteError('INVALID_SIZE', 'unsupportedSize', 400, { size: String(size) })
+  }
+
+  if (mode !== 'text-to-image' && mode !== 'image-to-image') {
+    throw new AiRouteError('INVALID_MODE', 'invalidGenerationMode', 400)
+  }
+
+  if (!isModelSupportedForMode(model, mode)) {
+    throw new AiRouteError('UNSUPPORTED_MODE_MODEL', 'imageToImageModelUnsupported', 400, { model })
+  }
+
+  if (mode === 'image-to-image') {
+    if (!sourceImage) {
+      throw new AiRouteError('REFERENCE_IMAGE_REQUIRED', 'referenceImageRequired', 400)
+    }
+
+    validateSourceImage(sourceImage)
   }
 
   return {
     prompt,
     model,
-    size,
+    mode,
+    size: size as ImageSize | undefined,
+    sourceImage,
   }
 }
 
@@ -193,6 +226,31 @@ async function buildImageModel(modelConfig: (typeof modelProviderMap)[keyof type
   return (provider as any).image(model)
 }
 
+async function generateImageFromPrompt(
+  modelConfig: (typeof modelProviderMap)[keyof typeof modelProviderMap],
+  model: string,
+  prompt: string,
+  size: ImageSize | undefined,
+  request: NextRequest
+) {
+  if (OPENAI_IMAGE_MODELS.has(model)) {
+    return generateImageWithOpenAI(model, prompt, size, request)
+  }
+
+  const imageModel = await buildImageModel(modelConfig, model, request)
+  const generateOptions = buildGenerationOptions(imageModel, prompt, size)
+
+  console.log('[AI Generate] SDK options:', {
+    model,
+    size: generateOptions.size,
+    hasSize: !!generateOptions.size,
+    optionsKeys: Object.keys(generateOptions)
+  })
+
+  const imageResult = await generateImage(generateOptions)
+  return imageResult.image.base64
+}
+
 function buildGenerationOptions(imageModel: any, prompt: string, size?: ImageSize) {
   const options: any = {
     model: imageModel,
@@ -206,9 +264,95 @@ function buildGenerationOptions(imageModel: any, prompt: string, size?: ImageSiz
   return options
 }
 
+async function generateImageWithOpenAI(
+  model: string,
+  prompt: string,
+  size: ImageSize | undefined,
+  request: NextRequest
+) {
+  const apiKey = process.env.OPENAI_API_KEY
+  if (!apiKey) {
+    throw new AiRouteError('API_KEY_NOT_CONFIGURED', 'apiKeyNotConfigured', 500, { provider: 'OpenAI' })
+  }
+
+  const response = await fetch('https://api.openai.com/v1/images/generations', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      model,
+      prompt,
+      size: size || '1024x1024',
+      response_format: 'b64_json',
+    }),
+  })
+
+  const data = await response.json().catch(() => null)
+  if (!response.ok) {
+    throw new Error(data?.error?.message || data?.message || 'Failed to generate image')
+  }
+
+  const base64 = data?.data?.[0]?.b64_json
+  if (!base64) {
+    throw new Error('OpenAI did not return image data.')
+  }
+
+  return base64 as string
+}
+
+async function generateImageEditWithOpenAI(
+  model: string,
+  prompt: string,
+  size: ImageSize | undefined,
+  sourceImage: File | undefined,
+  request: NextRequest
+) {
+  if (!sourceImage) {
+    throw new AiRouteError('REFERENCE_IMAGE_REQUIRED', 'referenceImageRequired', 400)
+  }
+
+  if (!OPENAI_IMAGE_MODELS.has(model)) {
+    throw new AiRouteError('UNSUPPORTED_MODE_MODEL', 'imageToImageModelUnsupported', 400, { model })
+  }
+
+  const apiKey = process.env.OPENAI_API_KEY
+  if (!apiKey) {
+    throw new AiRouteError('API_KEY_NOT_CONFIGURED', 'apiKeyNotConfigured', 500, { provider: 'OpenAI' })
+  }
+
+  const formData = new FormData()
+  formData.append('model', model)
+  formData.append('prompt', prompt)
+  formData.append('size', size || '1024x1024')
+  formData.append('response_format', 'b64_json')
+  formData.append('image', sourceImage, sourceImage.name || 'reference.png')
+
+  const response = await fetch('https://api.openai.com/v1/images/edits', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+    },
+    body: formData,
+  })
+
+  const data = await response.json().catch(() => null)
+  if (!response.ok) {
+    throw new Error(data?.error?.message || data?.message || 'Failed to edit image')
+  }
+
+  const base64 = data?.data?.[0]?.b64_json
+  if (!base64) {
+    throw new Error('OpenAI did not return edited image data.')
+  }
+
+  return base64 as string
+}
+
 async function finalizeGeneration(
   userId: string,
-  imageResult: Awaited<ReturnType<typeof generateImage>>,
+  imageBase64: string,
   balanceSnapshot: number,
   request: NextRequest
 ) {
@@ -218,7 +362,7 @@ async function finalizeGeneration(
     throw new AiRouteError('CREDITS_SPEND_FAILED', 'creditsSpendFailed', 500)
   }
 
-  const imageUrl = `data:image/png;base64,${imageResult.image.base64}`
+  const imageUrl = `data:image/png;base64,${imageBase64}`
 
   return NextResponse.json(
     {
@@ -226,7 +370,7 @@ async function finalizeGeneration(
       images: [
         {
           url: imageUrl,
-          base64: imageResult.image.base64,
+          base64: imageBase64,
         },
       ],
       credits: {
@@ -242,6 +386,18 @@ async function finalizeGeneration(
 
 function isValidSize(size: any): size is ImageSize {
   return ['256x256', '512x512', '768x768', '1024x1024', '1024x1792', '1792x1024'].includes(size)
+}
+
+function validateSourceImage(file: File) {
+  if (!file.type.startsWith('image/')) {
+    throw new AiRouteError('INVALID_REFERENCE_IMAGE', 'invalidReferenceImage', 400)
+  }
+
+  if (file.size > MAX_UPLOAD_BYTES) {
+    throw new AiRouteError('REFERENCE_IMAGE_TOO_LARGE', 'referenceImageTooLarge', 400, {
+      size: `${Math.round(MAX_UPLOAD_BYTES / (1024 * 1024))}MB`,
+    })
+  }
 }
 
 function buildExternalProviderErrorMessage(error: any) {
