@@ -1,12 +1,11 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { locales, defaultLocale } from '@/lib/i18n';
 import { getDictionary } from '@/lib/dictionaries';
 
 export default function RootPage() {
-  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
   // Detect browser language
@@ -43,11 +42,11 @@ export default function RootPage() {
       // Save detected language to localStorage
       localStorage.setItem('preferred-language', detectedLang);
       
-      // Jump to detected language page
-      router.replace(`/${detectedLang}`);
+      // Jump directly to the AI landing page
+      router.replace(`/${detectedLang}/ai`);
     } catch (error) {
       console.error('Language detection failed:', error);
-      router.replace(`/${defaultLocale}`);
+      router.replace(`/${defaultLocale}/ai`);
     }
   };
 
