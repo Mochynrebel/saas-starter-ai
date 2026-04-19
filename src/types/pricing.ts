@@ -94,13 +94,15 @@ export interface ProcessedPricing {
   name: string;
   description: string;
   image?: string;
-  price: number;
-  priceId: string;
   features: string[];
   buttonText: string;
   highlight?: boolean;
   currency: string;
-  interval: string;
-  originalPrice?: number;
   popular?: boolean;
+  prices: Partial<Record<'month' | 'year', {
+    price: number;
+    priceId: string;
+    interval: 'month' | 'year';
+    originalPrice?: number;
+  }>>;
 } 

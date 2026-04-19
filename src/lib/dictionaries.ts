@@ -76,6 +76,7 @@ export interface Dictionary {
     };
     pricing: {
     perMonth: string;
+    perYear: string;
     unlimited: string;
     popular: string;
     };
