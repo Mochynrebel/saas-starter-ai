@@ -966,8 +966,8 @@
     }
   },
   "blog": {
-    "pageTitle": "Our Blog",
-    "pageSubtitle": "Insights, tutorials, and updates from the Use GPT Image 2 team. Learn how to build better AI image workflows and grow your business.",
+    "pageTitle": "GPT Image 2 Blog",
+    "pageSubtitle": "Guides, prompts, and tutorials about GPT Image 2, ChatGPT images, AI image generation, and image editing workflows for faster high-quality results.",
     "noPosts": {
       "title": "No blog posts yet",
       "description": "We're working on some great content. Check back soon!",

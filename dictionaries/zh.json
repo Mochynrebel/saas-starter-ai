@@ -954,8 +954,8 @@
     }
   },
   "blog": {
-    "pageTitle": "我们的博客",
-    "pageSubtitle": "来自 Use GPT Image 2 团队的见解、教程和更新。学习如何打造更好的 AI 图像工作流并发展您的业务。",
+    "pageTitle": "GPT Image 2 博客",
+    "pageSubtitle": "聚焦 GPT Image 2、ChatGPT 图片、AI 图片生成与图片编辑工作流的指南、提示词和教程，帮助你更快获得高质量结果。",
     "noPosts": {
       "title": "还没有博客文章",
       "description": "我们正在制作一些精彩的内容。请稍后查看！",
