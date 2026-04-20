@@ -66,7 +66,7 @@ export function Header({ dict, initialUser }: HeaderProps) {
           <div className="flex-shrink-0">
             <Link
               href={getLocalizedHref('/')}
-              className="flex items-center"
+              className="flex items-center gap-3"
               aria-label={siteInfo.name}
             >
               <Image
@@ -77,7 +77,9 @@ export function Header({ dict, initialUser }: HeaderProps) {
                 className="h-10 w-10"
                 priority
               />
-              <span className="sr-only">{siteInfo.name}</span>
+              <span className="text-2xl font-bold text-primary leading-none">
+                {siteInfo.name}
+              </span>
             </Link>
           </div>
 
