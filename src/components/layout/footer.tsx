@@ -125,9 +125,24 @@ export function Footer({ dict }: FooterProps) {
           <p className="text-muted-foreground text-sm">
             © {currentYear} {siteInfo.copyright}
           </p>
-          <p className="text-muted-foreground text-sm mt-2 sm:mt-0">
+          <p className="text-muted-foreground text-sm">
             {siteInfo.tagline}
           </p>
+        </div>
+        <div className="mt-3 flex justify-center sm:justify-end">
+          <a
+            href="https://aifinderplus.com/item/use-gpt-image-2"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block opacity-50 transition-opacity hover:opacity-75"
+            aria-label="Featured on aifinderplus.com"
+          >
+            <img
+              src="https://aifinderplus.com/badge.svg"
+              alt="Feature On aifinderplus.com"
+              style={{ height: '34px', width: 'auto' }}
+            />
+          </a>
         </div>
       </div>
     </footer>
