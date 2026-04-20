@@ -88,6 +88,19 @@ export function Footer({ dict }: FooterProps) {
                 )
               })}
             </div>
+            <a
+              href="https://toolfame.com/item/use-gpt-image-2"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-6 inline-block"
+              aria-label="Featured on toolfame.com"
+            >
+              <img
+                src="https://toolfame.com/badge-light.svg"
+                alt="Featured on toolfame.com"
+                style={{ height: '54px', width: 'auto' }}
+              />
+            </a>
           </div>
 
           {/* Footer Sections */}
