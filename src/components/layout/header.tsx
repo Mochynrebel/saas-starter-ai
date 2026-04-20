@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { Menu, X, Sun, Moon, User, LogOut } from 'lucide-react'
 import { useTheme } from 'next-themes'
@@ -63,8 +64,20 @@ export function Header({ dict, initialUser }: HeaderProps) {
         <div className="flex items-center h-16">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <Link href={getLocalizedHref('/')} className="text-2xl font-bold text-primary">
-              {siteInfo.name}
+            <Link
+              href={getLocalizedHref('/')}
+              className="flex items-center"
+              aria-label={siteInfo.name}
+            >
+              <Image
+                src="/logo.svg"
+                alt={siteInfo.name}
+                width={40}
+                height={40}
+                className="h-10 w-10"
+                priority
+              />
+              <span className="sr-only">{siteInfo.name}</span>
             </Link>
           </div>
 

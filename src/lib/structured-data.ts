@@ -3,7 +3,7 @@ import type { BlogPost } from '@/types/blog'
 import { buildCanonicalUrl, siteUrl } from './seo'
 
 const siteName = 'Use GPT Image 2'
-const organizationLogo = `${siteUrl}/favicon.ico`
+const organizationLogo = `${siteUrl}/logo.svg`
 
 function getLanguageTag(locale: Locale) {
   return locale === 'zh' ? 'zh-CN' : 'en-US'

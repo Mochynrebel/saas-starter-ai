@@ -8,6 +8,8 @@ export default function RootLayout({
   return (
     <html suppressHydrationWarning>
       <head>
+        <link rel="icon" href="/logo.svg" type="image/svg+xml" />
+        <link rel="shortcut icon" href="/logo.svg" />
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-P9EL0EVBN9"></script>
         <script
           dangerouslySetInnerHTML={{
