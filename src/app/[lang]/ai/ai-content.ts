@@ -21,28 +21,44 @@ const showcaseImages = {
   warriorFusion: '/images/showcase/warrior-office-comparison.webp',
 }
 
+export function getHomeHeroContent(locale: Locale) {
+  if (locale === 'zh') {
+    return {
+      title: '用 GPT Image 2 把想法更快变成好看的图片',
+      description:
+        '输入一句人话就能开始生成。先在首页看效果，再进入 AI 工作台继续创建、编辑和下载你的结果。',
+    }
+  }
+
+  return {
+    title: 'Turn ideas into polished images faster with GPT Image 2',
+    description:
+      'Start with a simple prompt, watch the workflow in action, then jump into the AI workspace to create, edit, and download your own results.',
+  }
+}
+
 export function getAiExampleImages(locale: Locale) {
   if (locale === 'zh') {
     return [
       {
         imageUrl: showcaseImages.productAds,
         alt: '品牌广告视觉示例',
-        prompt: '快速生成适合产品广告、品牌展示页和营销视觉的高质量商业图像。',
+        prompt: '给我做一张看起来很高级的产品广告图，背景干净一点，像品牌官网首页会用的那种。',
       },
       {
         imageUrl: showcaseImages.animeGirl,
         alt: '角色一致性示例',
-        prompt: '基于参考图保持角色身份一致，继续扩展不同姿态、服装和场景。',
+        prompt: '想要一个好看的女生角色，风格真实一点，换几个不同场景，但人物要像同一个人。',
       },
       {
         imageUrl: showcaseImages.churchEdit,
         alt: '自然语言编辑示例',
-        prompt: '上传现有图片后直接用自然语言修改颜色、结构、背景和局部细节。',
+        prompt: '把这张图改得更明亮一点，细节更清楚，背景也顺手优化一下。',
       },
       {
         imageUrl: showcaseImages.warriorFusion,
         alt: '风格融合与参考图混合示例',
-        prompt: '混合多张参考图和视觉风格，生成更完整、更一致的最终画面。',
+        prompt: '把办公室场景和电影感角色风格混在一起，做成一张有冲击力但又自然的图。',
       },
     ]
   }
@@ -51,22 +67,22 @@ export function getAiExampleImages(locale: Locale) {
     {
       imageUrl: showcaseImages.productAds,
       alt: 'Product advertising visual example',
-      prompt: 'Generate polished campaign-ready visuals for product ads, landing pages, and commercial brand assets in a few seconds.',
+      prompt: 'Make this look like a premium product ad with a clean background and nice lighting.',
     },
     {
       imageUrl: showcaseImages.animeGirl,
       alt: 'Consistent character example',
-      prompt: 'Lock a character or subject from a reference image, then reuse that identity across outfits, scenes, and poses.',
+      prompt: 'Create a pretty female character and keep her looking like the same person in different scenes.',
     },
     {
       imageUrl: showcaseImages.churchEdit,
       alt: 'Natural language image editing example',
-      prompt: 'Upload an existing image and describe the edit in plain language to change objects, lighting, color, or composition.',
+      prompt: 'Make this image brighter, cleaner, and a bit more detailed without changing the whole scene.',
     },
     {
       imageUrl: showcaseImages.warriorFusion,
       alt: 'Style fusion and image blending example',
-      prompt: 'Blend multiple references or transfer a visual mood while keeping the final composition believable and structured.',
+      prompt: 'Mix an office scene with a cinematic fantasy style, but keep it looking natural and believable.',
     },
   ]
 }
@@ -178,6 +194,22 @@ export function getAiShowcaseContent(locale: Locale) {
         bullets: ['Blend multiple references', 'Transfer style with more structure preserved', 'More cohesive final outputs'],
       },
     ] satisfies ShowcaseItem[],
+  }
+}
+
+export function getAiWorkspaceContent(locale: Locale) {
+  if (locale === 'zh') {
+    return {
+      title: 'Workspace',
+      description:
+        '在这里直接输入提示词、上传参考图、生成结果并继续迭代。',
+    }
+  }
+
+  return {
+    title: 'Workspace',
+    description:
+      'Write prompts, upload references, generate results, and keep iterating.',
   }
 }
 

@@ -40,11 +40,12 @@
     "contact": "Contact",
     "cases": "Cases",
     "blocks": "Blocks",
-    "ai": "AI"
+    "ai": "Workspace"
   },
   "header": {
     "navigation": [
-      { "name": "AI", "href": "/ai" },
+      { "name": "Home", "href": "/" },
+      { "name": "Workspace", "href": "/ai" },
       { "name": "Pricing", "href": "/pricing" },
       { "name": "Blog", "href": "/blog" }
     ],

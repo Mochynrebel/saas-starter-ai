@@ -1,233 +1,176 @@
 "use client";
 
-import Image from "next/image";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, CheckCircle2, ImageIcon, Sparkles, Wand2 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowRight, LoaderCircle } from "lucide-react";
 
-export interface HomeImageWorkbenchCopy {
-  badge: string;
-  title: string;
-  description: string;
-  promptLabel: string;
-  promptPlaceholder: string;
-  promptHint: string;
-  promptChips: string[];
-  stepsTitle: string;
-  steps: Array<{ title: string; description: string }>;
-  examplesEyebrow: string;
-  examplesTitle: string;
-  examplesDescription: string;
-  examplePromptLabel: string;
-  examplePrompt: string;
-  examples: Array<{ title: string; tag: string; image: string }>;
-  primaryCta: string;
-  secondaryCta: string;
-  footerTitle: string;
-  footerDescription: string;
+interface ExampleImage {
+  imageUrl: string;
+  alt: string;
+  prompt: string;
 }
 
 interface HomeImageWorkbenchProps {
-  lang: string;
-  copy: HomeImageWorkbenchCopy;
+  locale: string;
+  title: string;
+  description: string;
+  examples: ExampleImage[];
 }
 
+type DemoPhase = "typing" | "generating" | "result";
+
+const HOME_COPY = {
+  en: {
+    promptPlaceholder: "A realistic product ad with cinematic lighting...",
+    generating: "Generating...",
+    cta: "Try for Free",
+  },
+  zh: {
+    promptPlaceholder: "一张带有电影级光影的真实产品广告图……",
+    generating: "Generating...",
+    cta: "Try for Free",
+  },
+} as const;
+
+const wait = (ms: number) => new Promise((resolve) => window.setTimeout(resolve, ms));
+
 export function HomeImageWorkbench({
-  lang,
-  copy,
+  locale,
+  title,
+  description,
+  examples,
 }: HomeImageWorkbenchProps) {
+  const copy = locale === "zh" ? HOME_COPY.zh : HOME_COPY.en;
+  const safeExamples = useMemo(() => (examples.length > 0 ? examples : []), [examples]);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [typedPrompt, setTypedPrompt] = useState("");
+  const [phase, setPhase] = useState<DemoPhase>("typing");
+  const [revealedIndex, setRevealedIndex] = useState(0);
+  const titleParts = useMemo(() => {
+    const marker = "GPT Image 2";
+    const index = title.indexOf(marker);
+    if (index === -1) {
+      return { before: title, highlight: "", after: "" };
+    }
+    return {
+      before: title.slice(0, index),
+      highlight: marker,
+      after: title.slice(index + marker.length),
+    };
+  }, [title]);
+
+  useEffect(() => {
+    if (safeExamples.length === 0) {
+      return;
+    }
+
+    let cancelled = false;
+
+    const runDemo = async () => {
+      const example = safeExamples[activeIndex];
+      setTypedPrompt("");
+      setPhase("typing");
+      const typingDuration = 5000;
+      const stepDelay = Math.max(40, Math.floor(typingDuration / Math.max(example.prompt.length, 1)));
+
+      for (let i = 1; i <= example.prompt.length; i += 1) {
+        if (cancelled) return;
+        setTypedPrompt(example.prompt.slice(0, i));
+        await wait(stepDelay);
+      }
+
+      if (cancelled) return;
+      setPhase("generating");
+      await wait(3000);
+
+      if (cancelled) return;
+      setRevealedIndex(activeIndex);
+      setPhase("result");
+      await wait(5000);
+
+      if (cancelled) return;
+      setActiveIndex((current) => (current + 1) % safeExamples.length);
+    };
+
+    runDemo();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [activeIndex, safeExamples]);
+
+  if (safeExamples.length === 0) {
+    return null;
+  }
+
   return (
-    <section className="relative overflow-hidden bg-[#f5f3ee] px-4 pb-16 pt-24 sm:px-6 lg:px-8 lg:pb-24 lg:pt-28">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(217,119,6,0.18),_transparent_26%),radial-gradient(circle_at_90%_15%,_rgba(15,23,42,0.08),_transparent_22%),linear-gradient(180deg,_rgba(255,255,255,0.6),_rgba(245,243,238,1))]" />
+    <section className="relative overflow-hidden px-4 pb-18 pt-20 sm:px-6 lg:px-8 lg:pb-24 lg:pt-28">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(59,130,246,0.16),_transparent_28%),radial-gradient(circle_at_85%_20%,_rgba(251,191,36,0.14),_transparent_22%),linear-gradient(180deg,_rgba(248,250,252,1),_rgba(255,255,255,1))]" />
       <div className="relative mx-auto max-w-7xl">
-        <div className="mb-8 max-w-3xl">
-          <Badge
-            variant="outline"
-            className="mb-4 border-black/10 bg-white/80 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.24em] text-black/70"
-          >
-            {copy.badge}
-          </Badge>
-          <h1 className="max-w-4xl text-4xl font-semibold tracking-[-0.04em] text-[#111111] sm:text-5xl lg:text-6xl">
-            {copy.title}
-          </h1>
-          <p className="mt-4 max-w-2xl text-base leading-7 text-black/62 sm:text-lg">
-            {copy.description}
-          </p>
-        </div>
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,540px)] lg:items-center lg:gap-12">
+          <div className="max-w-[560px] text-left">
+            <h1 className="max-w-[560px] text-4xl font-semibold tracking-[-0.05em] text-foreground leading-[1.14] sm:text-5xl sm:leading-[1.12] lg:text-[3.9rem] lg:leading-[1.1]">
+              {titleParts.before ? <span className="block">{titleParts.before.trimEnd()}</span> : null}
+              {titleParts.highlight ? (
+                <span className="block bg-gradient-to-r from-sky-600 via-cyan-500 to-emerald-500 bg-clip-text font-serif italic leading-[1.02] text-transparent">
+                  {titleParts.highlight}
+                </span>
+              ) : null}
+              {titleParts.after ? <span className="block">{titleParts.after.trimStart()}</span> : null}
+            </h1>
+            <p className="mt-6 max-w-2xl text-base leading-8 text-muted-foreground sm:text-lg sm:leading-9">
+              {description}
+            </p>
+            <div className="mt-10">
+              <Link
+                href={locale === "zh" ? "/zh/ai" : "/ai"}
+                className="inline-flex min-w-[168px] items-center justify-center rounded-xl bg-primary px-5 py-3 text-sm font-medium text-white transition-colors hover:bg-primary/90"
+              >
+                <span>{copy.cta}</span>
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </div>
+          </div>
 
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,460px)_minmax(0,1fr)]">
-          <Card className="border-black/10 bg-white/86 shadow-[0_28px_90px_rgba(17,17,17,0.08)] backdrop-blur">
-            <CardContent className="p-6 sm:p-7">
-              <div className="mb-6 flex items-center gap-3">
-                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#111111] text-white">
-                  <Wand2 className="h-5 w-5" />
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-[#111111]">
-                    {copy.promptLabel}
-                  </p>
-                  <p className="text-sm text-black/55">{copy.promptHint}</p>
-                </div>
-              </div>
-
-              <div className="rounded-[28px] border border-black/10 bg-[#faf8f3] p-5 shadow-inner">
-                <div className="mb-3 flex items-center gap-2 text-xs uppercase tracking-[0.22em] text-black/45">
-                  <Sparkles className="h-3.5 w-3.5" />
-                  Prompt
-                </div>
-                <p className="min-h-[180px] text-base leading-8 text-[#111111] sm:text-lg">
-                  {copy.promptPlaceholder}
+          <div className="ml-auto flex w-full max-w-[540px] flex-col gap-4">
+            <div className="rounded-[28px] border border-border/70 bg-card/95 p-4 shadow-[0_24px_90px_rgba(15,23,42,0.08)] backdrop-blur">
+              <div className="min-h-[96px] rounded-[22px] border border-border/60 bg-background px-5 py-4 shadow-inner">
+                <p className="text-lg leading-8 text-foreground">
+                  {typedPrompt || copy.promptPlaceholder}
+                  <span className="ml-1 inline-block h-5 w-[2px] animate-pulse bg-primary align-middle" />
                 </p>
               </div>
-
-              <div className="mt-4 flex flex-wrap gap-2">
-                {copy.promptChips.map((chip) => (
-                  <span
-                    key={chip}
-                    className="rounded-full border border-black/10 bg-[#faf8f3] px-3 py-1.5 text-xs text-black/60"
-                  >
-                    {chip}
-                  </span>
-                ))}
-              </div>
-
-              <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                <Link href={`/${lang}/ai`} className="block">
-                  <Button
-                    size="lg"
-                    className="h-12 w-full rounded-2xl bg-[#111111] text-white hover:bg-black/90"
-                    icon={ArrowRight}
-                    iconPosition="right"
-                  >
-                    {copy.primaryCta}
-                  </Button>
-                </Link>
-                <a
-                  href="#how-it-works"
-                  className="inline-flex h-12 items-center justify-center rounded-2xl border border-black/10 bg-[#faf8f3] px-6 text-sm font-medium text-[#111111] transition hover:bg-black/5"
-                >
-                  {copy.secondaryCta}
-                </a>
-              </div>
-
-              <div id="how-it-works" className="mt-8 rounded-[28px] border border-black/10 bg-[#faf8f3] p-5">
-                <div className="mb-4 flex items-center gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-[#111111]" />
-                  <p className="text-sm font-semibold text-[#111111]">
-                    {copy.stepsTitle}
-                  </p>
-                </div>
-                <div className="grid gap-3">
-                  {copy.steps.map((step, index) => (
-                    <div
-                      key={step.title}
-                      className="rounded-2xl border border-black/8 bg-white px-4 py-4"
-                    >
-                      <div className="mb-2 flex items-center gap-3">
-                        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#111111] text-xs font-semibold text-white">
-                          {index + 1}
-                        </div>
-                        <p className="text-sm font-semibold text-[#111111]">
-                          {step.title}
-                        </p>
-                      </div>
-                      <p className="text-sm leading-6 text-black/60">
-                        {step.description}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <div className="space-y-6">
-            <Card className="overflow-hidden border-black/10 bg-[#111111] text-white shadow-[0_28px_90px_rgba(17,17,17,0.14)]">
-              <CardContent className="p-6 sm:p-7">
-                <div className="mb-6 flex items-start justify-between gap-4">
-                  <div>
-                    <p className="text-xs uppercase tracking-[0.24em] text-white/45">
-                      {copy.examplesEyebrow}
-                    </p>
-                    <h2 className="mt-2 text-2xl font-semibold tracking-[-0.03em] text-white sm:text-3xl">
-                      {copy.examplesTitle}
-                    </h2>
-                    <p className="mt-3 max-w-2xl text-sm leading-6 text-white/68">
-                      {copy.examplesDescription}
-                    </p>
-                  </div>
-                  <div className="hidden h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/5 sm:flex">
-                    <ImageIcon className="h-5 w-5 text-white/80" />
-                  </div>
-                </div>
-
-                <div className="mb-6 rounded-[28px] border border-white/10 bg-white/5 p-5">
-                  <p className="text-xs uppercase tracking-[0.2em] text-white/45">
-                    {copy.examplePromptLabel}
-                  </p>
-                  <p className="mt-3 text-sm leading-7 text-white/85">
-                    {copy.examplePrompt}
-                  </p>
-                </div>
-
-                <div className="grid gap-4 md:grid-cols-3">
-                  {copy.examples.map((example, index) => (
-                    <div
-                      key={example.title}
-                      className={`overflow-hidden rounded-[28px] border border-white/10 bg-white/5 ${
-                        index === 0 ? "md:col-span-2" : ""
-                      }`}
-                    >
-                      <div className="relative aspect-[4/3]">
-                        <Image
-                          src={example.image}
-                          alt={example.title}
-                          fill
-                          className="object-cover"
-                        />
-                        <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(0,0,0,0.64),transparent_55%)]" />
-                        <div className="absolute bottom-0 left-0 right-0 p-4">
-                          <span className="inline-flex rounded-full border border-white/12 bg-black/30 px-2.5 py-1 text-[11px] uppercase tracking-[0.18em] text-white/70">
-                            {example.tag}
-                          </span>
-                          <p className="mt-2 text-sm font-medium text-white">
-                            {example.title}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            <div className="grid gap-4 sm:grid-cols-3">
-              {copy.steps.map((step, index) => (
-                <Card key={`${step.title}-summary`} className="border-black/10 bg-white/78">
-                  <CardContent className="p-5">
-                    <p className="text-xs uppercase tracking-[0.18em] text-black/40">
-                      Step {index + 1}
-                    </p>
-                    <p className="mt-2 text-base font-semibold text-[#111111]">
-                      {step.title}
-                    </p>
-                    <p className="mt-2 text-sm leading-6 text-black/62">
-                      {step.description}
-                    </p>
-                  </CardContent>
-                </Card>
-              ))}
             </div>
 
-            <div className="rounded-[28px] border border-black/10 bg-white/74 p-5">
-              <p className="text-sm font-semibold text-[#111111]">
-                {copy.footerTitle}
-              </p>
-              <p className="mt-2 text-sm leading-6 text-black/60">
-                {copy.footerDescription}
-              </p>
+            <div className="rounded-[28px] border border-border/70 bg-card/95 p-4 shadow-[0_24px_90px_rgba(15,23,42,0.08)] backdrop-blur">
+              <div className="relative aspect-[4/3] min-h-[320px] overflow-hidden rounded-[24px] border border-border/70 bg-muted/10 sm:min-h-[360px]">
+                {phase === "generating" ? (
+                  <div className="flex h-full min-h-[320px] items-center justify-center bg-background/85 sm:min-h-[360px]">
+                    <div className="flex items-center gap-3 rounded-full border border-border/70 bg-card px-5 py-3 text-base font-medium text-foreground shadow-sm">
+                      <LoaderCircle className="h-5 w-5 animate-spin text-primary" />
+                      <span>{copy.generating}</span>
+                    </div>
+                  </div>
+                ) : phase === "result" ? (
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={safeExamples[revealedIndex].imageUrl}
+                      className="absolute inset-0"
+                      initial={{ opacity: 0, scale: 1.04, filter: "blur(16px)" }}
+                      animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+                      exit={{ opacity: 0, scale: 0.98, filter: "blur(10px)" }}
+                      transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+                    >
+                      <img
+                        src={safeExamples[revealedIndex].imageUrl}
+                        alt={safeExamples[revealedIndex].alt}
+                        className="h-full w-full object-contain"
+                      />
+                    </motion.div>
+                  </AnimatePresence>
+                ) : <div className="flex h-full min-h-[320px] items-center justify-center bg-background/65 sm:min-h-[360px]" />}
+              </div>
             </div>
           </div>
         </div>

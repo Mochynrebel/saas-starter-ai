@@ -40,11 +40,12 @@
     "contact": "联系我们",
     "cases": "案例",
     "blocks": "组件",
-    "ai": "AI"
+    "ai": "Workspace"
   },
   "header": {
     "navigation": [
-      { "name": "AI", "href": "/ai" },
+      { "name": "首页", "href": "/" },
+      { "name": "Workspace", "href": "/ai" },
       { "name": "价格", "href": "/pricing" },
       { "name": "博客", "href": "/blog" }
     ],

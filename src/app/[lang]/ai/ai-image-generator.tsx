@@ -187,11 +187,14 @@ export function AIImageGenerator({ config }: AIImageGeneratorProps) {
         credentials: 'include',
       })
       if (!response.ok) {
+        if (response.status === 401) {
+          setBalanceError(null)
+          setHasEnoughCredits(null)
+          return
+        }
+
         const errorJson = await response.json().catch(() => null)
-        const message =
-          response.status === 401
-            ? config.pleaseSignIn || 'Please sign in to use the AI generator.'
-            : errorJson?.error || config.unableToFetchCredits || 'Unable to fetch credits. Please try again.'
+        const message = errorJson?.error || config.unableToFetchCredits || 'Unable to fetch credits. Please try again.'
         setBalanceError(message)
         setHasEnoughCredits(false)
         return
@@ -384,6 +387,10 @@ export function AIImageGenerator({ config }: AIImageGeneratorProps) {
                         ({config.cost || 'Cost'} {creditCost})
                       </span>
                     )
+                  }
+
+                  if (!balanceError) {
+                    return null
                   }
 
                   return (

@@ -8,7 +8,7 @@ import { Menu, X, Sun, Moon, User, LogOut } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { Button } from '@/components/ui/button'
 import { Dictionary } from '@/lib/dictionaries'
-import { Locale } from '@/lib/i18n'
+import { defaultLocale, Locale, locales } from '@/lib/i18n'
 import LanguageSwitcher from '@/components/language-switcher'
 import { useAuth } from '@/contexts/AuthContext'
 import { User as UserType } from '@/lib/auth'
@@ -24,7 +24,10 @@ export function Header({ dict, initialUser }: HeaderProps) {
   const pathname = usePathname()
   
   // Extract current language from path
-  const currentLang = (pathname.split('/')[1] || 'en') as Locale
+  const pathSegments = pathname.split('/').filter(Boolean)
+  const currentLang = locales.includes(pathSegments[0] as Locale)
+    ? (pathSegments[0] as Locale)
+    : defaultLocale
   
   // 直接使用认证状态，AuthContext 会处理状态同步
   const { user, loading, signOut } = useAuth()
@@ -42,7 +45,10 @@ export function Header({ dict, initialUser }: HeaderProps) {
   // Add language prefix to navigation links
   const getLocalizedHref = (href: string) => {
     if (href === '/') {
-      return currentLang === 'en' ? '/' : `/${currentLang}/ai`
+      return currentLang === defaultLocale ? '/' : `/${currentLang}`
+    }
+    if (href === '/ai') {
+      return currentLang === defaultLocale ? '/ai' : `/${currentLang}/ai`
     }
     return `/${currentLang}${href}`
   }

@@ -10,8 +10,11 @@ function normalizePath(path: string) {
 
 export function getLocalizedPath(locale: Locale, path: string = '') {
   const normalized = normalizePath(path)
-  if (normalized === '/' || normalized === '/ai') {
-    return locale === defaultLocale ? '/' : `/${locale}/ai`
+  if (normalized === '/') {
+    return locale === defaultLocale ? '/' : `/${locale}`
+  }
+  if (normalized === '/ai') {
+    return locale === defaultLocale ? '/ai' : `/${locale}/ai`
   }
   return `/${locale}${normalized}`
 }

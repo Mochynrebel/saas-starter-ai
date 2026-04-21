@@ -30,8 +30,11 @@ export default function LanguageSwitcher({ currentLang, dict }: LanguageSwitcher
   const basePath = getPathWithoutLang();
 
   const getLocaleHref = (locale: Locale) => {
-    if (basePath === '/' || basePath === '/ai') {
-      return locale === 'en' ? '/' : `/${locale}/ai`;
+    if (basePath === '/') {
+      return locale === 'en' ? '/' : `/${locale}`;
+    }
+    if (basePath === '/ai') {
+      return locale === 'en' ? '/ai' : `/${locale}/ai`;
     }
     return `/${locale}${basePath}`;
   };

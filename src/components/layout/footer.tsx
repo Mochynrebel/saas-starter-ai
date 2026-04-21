@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Github, Twitter, Linkedin, Mail } from 'lucide-react'
 import { Dictionary } from '@/lib/dictionaries'
+import { defaultLocale, locales, Locale } from '@/lib/i18n'
 
 interface FooterProps {
   dict?: Dictionary
@@ -19,7 +20,10 @@ export function Footer({ dict }: FooterProps) {
   }, [])
   
   // Extract current language from path
-  const currentLang = pathname.split('/')[1] || 'en'
+  const pathSegments = pathname.split('/').filter(Boolean)
+  const currentLang = locales.includes(pathSegments[0] as Locale)
+    ? (pathSegments[0] as Locale)
+    : defaultLocale
   
   // Use default values if dict is not provided
   const siteInfo = {
@@ -40,7 +44,10 @@ export function Footer({ dict }: FooterProps) {
   // Add language prefix to navigation links
   const getLocalizedHref = (href: string) => {
     if (href === '/') {
-      return currentLang === 'en' ? '/' : `/${currentLang}/ai`
+      return currentLang === defaultLocale ? '/' : `/${currentLang}`
+    }
+    if (href === '/ai') {
+      return currentLang === defaultLocale ? '/ai' : `/${currentLang}/ai`
     }
     return `/${currentLang}${href}`
   }

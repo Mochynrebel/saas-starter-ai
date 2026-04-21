@@ -1,8 +1,6 @@
 import { Locale } from '@/lib/i18n'
 import { AIImageGenerator } from './ai-image-generator'
-import { FeatureShowcase } from './feature-showcase'
-import { FAQ } from '@/components/sections/faq'
-import { getAiExampleImages, getAiFaqContent, getAiShowcaseContent } from './ai-content'
+import { getAiWorkspaceContent } from './ai-content'
 
 interface AILandingPageContentProps {
   locale: Locale
@@ -13,8 +11,7 @@ export function AILandingPageContent({
   locale,
   aiConfig,
 }: AILandingPageContentProps) {
-  const showcase = getAiShowcaseContent(locale)
-  const faq = getAiFaqContent(locale)
+  const workspace = getAiWorkspaceContent(locale)
 
   const generatorConfig = {
     ...aiConfig.generator,
@@ -29,45 +26,25 @@ export function AILandingPageContent({
     failedToFetchCost: aiConfig.generator.failedToFetchCost,
     imageGenerationTimeout: aiConfig.generator.imageGenerationTimeout,
     modelNotConfigured: aiConfig.generator.modelNotConfigured,
-    exampleImages: getAiExampleImages(locale),
   }
 
   return (
-    <>
-      <section className="px-4 pb-10 pt-12 sm:px-6 lg:px-8 lg:pb-14 lg:pt-16">
-        <div className="mx-auto max-w-7xl">
-          <div className="mx-auto mb-8 max-w-4xl text-center lg:mb-10">
-            <h1 className="mx-auto max-w-3xl text-4xl font-semibold tracking-[-0.05em] text-foreground sm:text-5xl lg:text-6xl">
-              {showcase.title}
-            </h1>
-            <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">
-              {showcase.description}
-            </p>
-
-            <div className="mt-6 flex flex-wrap justify-center gap-3">
-              {showcase.stats.map((stat) => (
-                <span
-                  key={stat}
-                  className="rounded-full border border-border/70 bg-muted/30 px-4 py-2 text-sm text-foreground/85"
-                >
-                  {stat}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          <AIImageGenerator config={generatorConfig} />
+    <section className="px-4 pb-10 pt-20 sm:px-6 lg:px-8 lg:pb-14 lg:pt-24">
+      <div className="mx-auto max-w-7xl">
+        <div className="mb-6 max-w-3xl">
+          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-primary/75">
+            Create
+          </p>
+          <h1 className="mt-3 max-w-3xl text-3xl font-semibold tracking-[-0.05em] text-foreground sm:text-4xl lg:text-5xl">
+            {workspace.title}
+          </h1>
+          <p className="mt-4 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">
+            {workspace.description}
+          </p>
         </div>
-      </section>
 
-      <FeatureShowcase
-        badge={showcase.sectionBadge}
-        title={showcase.sectionTitle}
-        description={showcase.sectionDescription}
-        items={showcase.items}
-      />
-
-      <FAQ dict={faq} />
-    </>
+        <AIImageGenerator config={generatorConfig} />
+      </div>
+    </section>
   )
 }

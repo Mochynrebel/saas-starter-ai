@@ -4,9 +4,7 @@ import { getDictionary } from '@/lib/dictionaries'
 import { Locale, locales } from '@/lib/i18n'
 import { withCanonical } from '@/lib/seo'
 import { AILandingPageContent } from './ai-landing-page-content'
-import { JsonLd } from '@/components/seo/json-ld'
-import { buildFaqStructuredData, buildWebsiteStructuredData } from '@/lib/structured-data'
-import { getAiFaqContent } from './ai-content'
+import { getAiWorkspaceContent } from './ai-content'
 
 export const dynamic = 'force-static'
 
@@ -18,20 +16,31 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: Locale }> }) {
   const { lang } = await params
-  return withCanonical({}, lang)
+  const workspace = getAiWorkspaceContent(lang)
+  return withCanonical(
+    {
+      title: workspace.title,
+      description: workspace.description,
+      openGraph: {
+        title: workspace.title,
+        description: workspace.description,
+      },
+      twitter: {
+        title: workspace.title,
+        description: workspace.description,
+      },
+    },
+    lang,
+    '/ai'
+  )
 }
 
 export default async function AIPage({ params }: { params: Promise<{ lang: Locale }> }) {
   const { lang } = await params
   const dict = await getDictionary(lang)
-  const faq = getAiFaqContent(lang)
-  const websiteStructuredData = buildWebsiteStructuredData(lang)
-  const faqStructuredData = buildFaqStructuredData(lang, faq.faq.faqs)
 
   return (
     <Layout dict={dict}>
-      <JsonLd data={websiteStructuredData} />
-      <JsonLd data={faqStructuredData} />
       <AILandingPageContent locale={lang} aiConfig={dict.ai} />
     </Layout>
   )
