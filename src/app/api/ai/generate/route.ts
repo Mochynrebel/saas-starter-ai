@@ -1,13 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { experimental_generateImage as generateImage } from 'ai'
 import { withTokenRefresh } from '@/lib/auth-server'
-import { getUserCreditsBalance, spendCredits } from '@/lib/credits'
+import { refundCredits, spendCreditsAtomic } from '@/lib/credits'
 import { getImageGenerationCreditCost } from '@/lib/ai-cost'
 import { getRequestDictionary } from '@/lib/api-i18n'
 import { modelProviderMap, ImageSize, ParsedRequestBody, AiRouteError } from '@/lib/ai-models-config'
 import { isModelSupportedForMode } from '@/lib/ai-models'
+import {
+  createGenerationRecord,
+  deleteStoredImage,
+  uploadGeneratedImageFromBase64,
+  uploadSourceImage,
+} from '@/lib/ai-generations'
 
-const OPENAI_IMAGE_MODELS = new Set(['gpt-image-1'])
+const OPENAI_IMAGE_MODELS = new Set(['gpt-image-2'])
 const MAX_UPLOAD_BYTES = 10 * 1024 * 1024
 
 function shouldAddCorsHeaders(request: NextRequest) {
@@ -58,6 +64,11 @@ export const maxDuration = 30
 
 export async function POST(request: NextRequest) {
   return withTokenRefresh(request, async (user) => {
+    let creditsReserved = false
+    let reservedCost = 0
+    let storedOutputPath: string | null = null
+    let storedSourcePath: string | null = null
+
     try {
       if (!user?.id) {
         return await createErrorResponse('UNAUTHORIZED', 'userAuthenticationRequired', 401, request)
@@ -75,7 +86,24 @@ export async function POST(request: NextRequest) {
       })
       
       const modelConfig = await resolveModelConfig(model, request)
-      const balanceSnapshot = await ensureCredits(user.id, request)
+      const creditCost = getImageGenerationCreditCost({ model, size, mode })
+      const creditReservation = await spendCreditsAtomic(user.id, creditCost, 'AI image generation')
+
+      if (creditReservation.error) {
+        throw new AiRouteError('CREDITS_SYSTEM_ERROR', 'creditsSpendFailed', 500)
+      }
+
+      if (!creditReservation.success) {
+        throw new AiRouteError(
+          'INSUFFICIENT_CREDITS',
+          'notEnoughCredits',
+          402,
+          { cost: creditCost.toString(), balance: creditReservation.balance.toString() }
+        )
+      }
+
+      creditsReserved = true
+      reservedCost = creditCost
 
       const startTime = Date.now()
       const startTimeISO = new Date().toISOString()
@@ -91,8 +119,51 @@ export async function POST(request: NextRequest) {
       console.log('[AI Generate] End time:', endTimeISO)
       console.log('[AI Generate] Duration:', `${duration}ms (${(duration / 1000).toFixed(2)}s)`)
 
-      return await finalizeGeneration(user.id, imageBase64, balanceSnapshot, request)
+      if (sourceImage) {
+        const sourceAsset = await uploadSourceImage(user.id, sourceImage)
+        storedSourcePath = sourceAsset.path
+      }
+
+      const outputAsset = await uploadGeneratedImageFromBase64(user.id, imageBase64, 'image/png')
+      storedOutputPath = outputAsset.path
+
+      const generationRecord = await createGenerationRecord({
+        userId: user.id,
+        prompt,
+        model,
+        mode,
+        size,
+        creditCost,
+        outputImagePath: outputAsset.path,
+        outputMimeType: outputAsset.mimeType,
+        sourceImagePath: storedSourcePath,
+        metadata: {
+          durationMs: duration,
+          provider: OPENAI_IMAGE_MODELS.has(model) ? 'openai' : modelConfig.envName.toLowerCase(),
+        },
+      })
+
+      return await finalizeGeneration(
+        outputAsset.signedUrl,
+        imageBase64,
+        generationRecord.id,
+        creditReservation.balance,
+        creditCost,
+        request
+      )
     } catch (error) {
+      if (creditsReserved && reservedCost > 0) {
+        await refundCredits(user.id, reservedCost, 'Refund for failed AI image generation')
+      }
+
+      if (storedOutputPath) {
+        await deleteStoredImage(storedOutputPath)
+      }
+
+      if (storedSourcePath) {
+        await deleteStoredImage(storedSourcePath)
+      }
+
       if (error instanceof AiRouteError) {
         return await createErrorResponse(error.code, error.messageKey, error.status, request, error.params)
       }
@@ -196,22 +267,6 @@ async function resolveModelConfig(model: string, request: NextRequest) {
   return config
 }
 
-async function ensureCredits(userId: string, request: NextRequest) {
-  const balance = await getUserCreditsBalance(userId)
-  const cost = getImageGenerationCreditCost()
-
-  if (balance < cost) {
-    throw new AiRouteError(
-      'INSUFFICIENT_CREDITS',
-      'notEnoughCredits',
-      402,
-      { cost: cost.toString(), balance: balance.toString() }
-    )
-  }
-
-  return balance
-}
-
 async function buildImageModel(modelConfig: (typeof modelProviderMap)[keyof typeof modelProviderMap], model: string, request: NextRequest) {
   const apiKey = process.env[modelConfig.envKey]
 
@@ -285,7 +340,7 @@ async function generateImageWithOpenAI(
       model,
       prompt,
       size: size || '1024x1024',
-      response_format: 'b64_json',
+      output_format: 'png',
     }),
   })
 
@@ -326,7 +381,7 @@ async function generateImageEditWithOpenAI(
   formData.append('model', model)
   formData.append('prompt', prompt)
   formData.append('size', size || '1024x1024')
-  formData.append('response_format', 'b64_json')
+  formData.append('output_format', 'png')
   formData.append('image', sourceImage, sourceImage.name || 'reference.png')
 
   const response = await fetch('https://api.openai.com/v1/images/edits', {
@@ -351,21 +406,16 @@ async function generateImageEditWithOpenAI(
 }
 
 async function finalizeGeneration(
-  userId: string,
+  imageUrl: string,
   imageBase64: string,
-  balanceSnapshot: number,
+  generationId: string,
+  remainingBalance: number,
+  cost: number,
   request: NextRequest
 ) {
-  const cost = getImageGenerationCreditCost()
-  const spendSuccess = await spendCredits(userId, cost, 'AI image generation')
-  if (!spendSuccess) {
-    throw new AiRouteError('CREDITS_SPEND_FAILED', 'creditsSpendFailed', 500)
-  }
-
-  const imageUrl = `data:image/png;base64,${imageBase64}`
-
   return NextResponse.json(
     {
+      generationId,
       imageUrl,
       images: [
         {
@@ -375,7 +425,7 @@ async function finalizeGeneration(
       ],
       credits: {
         cost,
-        balance: Math.max(balanceSnapshot - cost, 0),
+        balance: Math.max(remainingBalance, 0),
       },
     },
     {

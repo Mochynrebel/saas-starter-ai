@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { spendCredits } from '@/lib/credits'
+import { spendCreditsAtomic } from '@/lib/credits'
 import { withTokenRefresh } from '@/lib/auth-server'
 
 export const dynamic = 'force-dynamic'
@@ -42,16 +42,23 @@ export async function POST(request: NextRequest) {
         )
       }
 
-      const success = await spendCredits(
+      const result = await spendCreditsAtomic(
         user.id,
         amount,
         description
       )
 
-      if (!success) {
+      if (result.error) {
         return NextResponse.json(
-          { error: 'Failed to spend credits' },
+          { error: result.error },
           { status: 500 }
+        )
+      }
+
+      if (!result.success) {
+        return NextResponse.json(
+          { error: 'Failed to spend credits', balance: result.balance },
+          { status: 400 }
         )
       }
 
@@ -60,6 +67,7 @@ export async function POST(request: NextRequest) {
         message: `Successfully spent ${amount} credits`,
         userId: user.id,
         amount: amount,
+        balance: result.balance,
         orderId: orderId || null,
       })
     } catch (error) {

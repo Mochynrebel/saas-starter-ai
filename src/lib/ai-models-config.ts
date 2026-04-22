@@ -14,7 +14,7 @@ import { createFal } from '@ai-sdk/fal'
 import { createReplicate } from '@ai-sdk/replicate'
 
 export const modelProviderMap = {
-  'gpt-image-1': { provider: createOpenAI, envKey: 'OPENAI_API_KEY', envName: 'OpenAI' },
+  'gpt-image-2': { provider: createOpenAI, envKey: 'OPENAI_API_KEY', envName: 'OpenAI' },
   'dall-e-3': { provider: createOpenAI, envKey: 'OPENAI_API_KEY', envName: 'OpenAI' },
   'dall-e-2': { provider: createOpenAI, envKey: 'OPENAI_API_KEY', envName: 'OpenAI' },
   'imagen-3.0-generate-002': {

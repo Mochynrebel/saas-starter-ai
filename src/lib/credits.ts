@@ -1,5 +1,12 @@
 import { createSupabaseAdminClient } from './supabase'
 
+interface AtomicSpendResult {
+  success: boolean
+  balance: number
+  trans_no: string | null
+  error?: string
+}
+
 /**
  * 积分系统配置
  */
@@ -137,6 +144,84 @@ export async function spendCredits(
     return true
   } catch (err) {
     console.error('Error spending credits:', err)
+    return false
+  }
+}
+
+export async function spendCreditsAtomic(
+  userId: string,
+  amount: number,
+  description?: string
+): Promise<AtomicSpendResult> {
+  try {
+    if (amount <= 0) {
+      throw new Error('Spend amount must be positive')
+    }
+
+    const supabase = createSupabaseAdminClient()
+    const { data, error } = await supabase.rpc('spend_user_credits_atomic', {
+      p_user_id: userId,
+      p_amount: amount,
+      p_description: description || '花费积分',
+    })
+
+    if (error) {
+      throw new Error(`Failed to spend credits atomically: ${error.message}`)
+    }
+
+    const resultRow = Array.isArray(data) ? data[0] : data
+
+    return {
+      success: Boolean(resultRow?.success),
+      balance: Number(resultRow?.balance || 0),
+      trans_no: resultRow?.trans_no || null,
+      error: undefined,
+    }
+  } catch (err) {
+    const errorMessage = err instanceof Error ? err.message : 'Unknown atomic credit spend error'
+    console.error('Error spending credits atomically:', err)
+    return {
+      success: false,
+      balance: 0,
+      trans_no: null,
+      error: errorMessage,
+    }
+  }
+}
+
+export async function refundCredits(
+  userId: string,
+  amount: number,
+  description?: string
+): Promise<boolean> {
+  try {
+    if (amount <= 0) {
+      console.error('Refund amount must be positive')
+      return false
+    }
+
+    const supabase = createSupabaseAdminClient()
+    const trans_no = generateTransNo('refund')
+
+    const { error } = await supabase
+      .from('credits')
+      .insert({
+        trans_no,
+        user_id: userId,
+        trans_type: 'refund',
+        credits: amount,
+        description: description || '积分退款',
+      })
+
+    if (error) {
+      console.error('Failed to refund credits:', error)
+      return false
+    }
+
+    console.log(`✅ Credits refunded for user ${userId}: +${amount}`)
+    return true
+  } catch (err) {
+    console.error('Error refunding credits:', err)
     return false
   }
 }

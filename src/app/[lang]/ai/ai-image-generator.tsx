@@ -127,7 +127,11 @@ export function AIImageGenerator({ config }: AIImageGeneratorProps) {
 
   useEffect(() => {
     fetchCreditCost()
+  }, [model, size, mode]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
     fetchCreditsBalance()
+    fetchGenerationHistory()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
@@ -164,7 +168,12 @@ export function AIImageGenerator({ config }: AIImageGeneratorProps) {
   const fetchCreditCost = async () => {
     setIsFetchingCost(true)
     try {
-      const response = await fetch(buildApiUrl('/ai/image-cost'))
+      const query = new URLSearchParams({
+        model,
+        size,
+        mode,
+      })
+      const response = await fetch(`${buildApiUrl('/ai/image-cost')}?${query.toString()}`)
       if (!response.ok) {
         throw new Error(config.failedToFetchCost || 'Failed to fetch image cost.')
       }
@@ -209,6 +218,30 @@ export function AIImageGenerator({ config }: AIImageGeneratorProps) {
       setHasEnoughCredits(false)
     } finally {
       setIsCheckingCredits(false)
+    }
+  }
+
+  const fetchGenerationHistory = async () => {
+    try {
+      const response = await fetch(`${buildApiUrl('/ai/history')}?limit=20`, {
+        credentials: 'include',
+      })
+
+      if (!response.ok) {
+        return
+      }
+
+      const data = await response.json()
+      const persistedHistory = Array.isArray(data?.generations)
+        ? data.generations.map((item: { imageUrl: string; prompt: string }) => ({
+            imageUrl: item.imageUrl,
+            prompt: item.prompt,
+          }))
+        : []
+
+      setImageHistory(persistedHistory)
+    } catch (historyError) {
+      console.error('[AIImageGenerator] fetch history error', historyError)
     }
   }
 
@@ -283,7 +316,7 @@ export function AIImageGenerator({ config }: AIImageGeneratorProps) {
       // Add to history
       setImageHistory(prev => [
         { imageUrl: data.imageUrl, prompt: prompt },
-        ...prev
+        ...prev.filter(item => item.imageUrl !== data.imageUrl)
       ])
     } catch (err) {
       console.error('[AIImageGenerator] error', err)

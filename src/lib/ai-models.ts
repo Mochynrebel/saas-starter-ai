@@ -20,7 +20,7 @@ export const modelSizeMapping: Record<string, string[]> = {
   'fal-ai/flux-pro/v1.1': ['1024x1024'],
   
   // OpenAI Models - Based on OpenAI API documentation
-  'gpt-image-1': ['1024x1024'],
+  'gpt-image-2': ['1024x1024'],
   'dall-e-3': ['1024x1024', '1024x1792', '1792x1024'],
   'dall-e-2': ['256x256', '512x512', '1024x1024'],
   
@@ -68,7 +68,7 @@ export function getDefaultSize(model: string): string {
 
 // Model options list
 export const modelOptions: ModelOption[] = [
-  { value: 'gpt-image-1', label: 'OpenAI/GPT Image 1', modes: ['text-to-image', 'image-to-image'] },
+  { value: 'gpt-image-2', label: 'OpenAI/GPT Image 2', modes: ['text-to-image', 'image-to-image'] },
   // FAL Models (first - default)
   { value: 'fal-ai/flux/schnell', label: 'FAL/FLUX Schnell', modes: ['text-to-image'] },
   // { value: 'fal-ai/flux/dev', label: 'FAL/FLUX Dev' },
@@ -109,6 +109,6 @@ export function isModelSupportedForMode(model: string, mode: GenerationMode): bo
 }
 
 export function getDefaultModelForMode(mode: GenerationMode): string {
-  return getModelsForMode(mode)[0]?.value ?? modelOptions[0]?.value ?? 'gpt-image-1'
+  return getModelsForMode(mode)[0]?.value ?? modelOptions[0]?.value ?? 'gpt-image-2'
 }
 
