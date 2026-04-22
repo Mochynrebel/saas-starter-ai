@@ -34,19 +34,20 @@ export async function POST(request: NextRequest) {
       )
     }
 
-   
+    const stripeConfigured = Boolean(process.env.STRIPE_SECRET_KEY?.trim())
 
-    let customer;
-    try {
-      customer = await createOrRetrieveCustomer({
-        uuid: error ? "" : data.user?.id || "",
-        email: email,
-      }).catch((err: any) => {
-        throw err;
-      });
-    } catch (err: any) {
-      console.error(err);
-      return new Response(err.message, { status: 500 });
+    if (stripeConfigured && data.user?.id) {
+      try {
+        await createOrRetrieveCustomer({
+          uuid: data.user.id,
+          email,
+        })
+      } catch (err: any) {
+        console.error('Failed to create Stripe customer during signup:', err)
+        // Billing setup should not block account creation.
+      }
+    } else if (!stripeConfigured) {
+      console.warn('Skipping Stripe customer creation during signup because STRIPE_SECRET_KEY is not configured')
     }
 
     // 添加注册奖励积分
@@ -120,6 +121,7 @@ export async function POST(request: NextRequest) {
     return response
 
   } catch (error) {
+    console.error('Signup route error:', error)
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
