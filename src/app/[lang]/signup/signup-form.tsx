@@ -94,7 +94,14 @@ export default function SignupForm({ dict, lang }: SignupFormProps) {
         }),
       })
 
-      const data = await response.json()
+      const rawText = await response.text()
+      let data: any = null
+
+      try {
+        data = rawText ? JSON.parse(rawText) : null
+      } catch {
+        data = null
+      }
 
       if (response.ok) {
         setToast({ message: data.message || 'Account created successfully!', type: 'success' })
@@ -102,7 +109,7 @@ export default function SignupForm({ dict, lang }: SignupFormProps) {
           // 有 session，等待 Cookie 设置完成后刷新页面以重新初始化 AuthContext
           console.log('Registration successful with session, redirecting...')
           setTimeout(() => {
-            window.location.href = `/${lang}?auth=success`
+            window.location.href = `/${lang}/ai?auth=success`
           }, 1500)
         } else {
           // 其他情况，跳转到登录页
@@ -112,10 +119,14 @@ export default function SignupForm({ dict, lang }: SignupFormProps) {
           }, 2000)
         }
       } else {
-        setError(data.error || 'An error occurred')
+        setError(
+          data?.error ||
+          rawText ||
+          `Request failed with status ${response.status}`
+        )
       }
     } catch (error) {
-      setError('Network error. Please try again.')
+      setError(error instanceof Error ? error.message : 'Network error. Please try again.')
     } finally {
       setLoading(false)
     }
